@@ -1,0 +1,1203 @@
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">Daftar Pengiriman</header>
+    <div class="panel-body">
+
+        <form class="form-horizontal" action="javascript:void(0);">
+
+            <div class="panel-body" id="table1">
+                <div class="table-responsive">
+
+                    <table class="table table-striped" id="myTable" cellpadding="0" cellspacing="0" border="0"
+                        class="display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Shipment Id</th>
+
+                                <th>Customer</th>
+
+                                <th>Ship Trip</th>
+
+                                <th>Payment Status</th>
+
+                                <th>Shipment Status</th>
+
+                                <th>Status/Detail/Delete</th>
+
+                            </tr>
+
+                        </thead>
+
+                    </table>
+
+                </div>
+                <a id="cetak1" href="#" class="list-group-item text-ellipsis">
+                    <center>
+                        Print Report
+                    </center>
+                </a>
+            </div>
+
+
+    </div>
+
+    </form>
+    </div>
+</section>
+
+<div id="Modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal" action="javascript:void(0);" id="form_absent">
+                    <fieldset disabled="disabled" id="fieldisable">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Shipment ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="" id="s_id" disabled="disabled"
+                                    required="required">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Customer ID</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" value="" id="c_id" required="required">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" value="add" id="edit_cus" onclick="button_action('a')"
+                                    formnovalidate="formnovalidate">Edit Customer</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Ship Trip ID</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" value="" id="s_t_id" required="required">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" value="add" id="edit_trip" onclick="button_action('b')"
+                                    formnovalidate="formnovalidate">Edit Trip ID</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Ship Trip Detail ID</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" value="" id="s_t_d_id" required="required">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" value="add" id="edit_trip" onclick="button_action('c')"
+                                    formnovalidate="formnovalidate">Edit Trip ID</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Receiver</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="" id="receiver">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Receiver Contact</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="" id="r_contact"
+                                    onkeyup="this.value = minmax(this.value, 0, 10000000000000)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Shipted Date</label>
+                            <div class="col-sm-3">
+                                <input class="input-sm input-s datepicker-input form-control" size="16" type="date"
+                                    value="2014-02-12" id="s_date" required="required" data-date-format="yyyy-mm-dd">
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group clockpicker-with-callbacks">
+                                    <input type="time" class="form-control" value="22:10" id="s_time"
+                                        required="required">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="line line-dashed line-lg pull-in"></div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped b-t b-light" id="tabledata">
+                                <thead>
+                                    <tr>
+                                        <th style="display:none">Item Package</th>
+
+                                        <th>Item Package</th>
+
+                                        <th>Price</th>
+
+                                        <th>Quantity</th>
+
+                                        <th>Discount(%)</th>
+
+                                        <th>Total</th>
+
+                                        <th>Note</th>
+
+                                        <th>Edit / Delete</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody id="viewtable">
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="line line-dashed line-lg pull-in"></div>
+
+                        <div class="form-group text-center">
+
+                            <button class="btn btn-primary" value="add_item" id="add_item"
+                                onClick="button_action('add_item')">Add More Item</button>
+
+                        </div>
+                        <div class="line line-dashed line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Total</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="0" id="total" disabled="disabled"
+                                    required="required" onchange="count2()">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Extra Charge</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="0" id="extra"
+                                    onkeyup="this.value = extra_charge(this.value, 0, 10000000000000)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Discount</label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="persent" value="0" placeholder="Persent"
+                                    onkeyup="this.value = discount(this.value, 0, 100)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Total Price</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="0" id="total_price" disabled="disabled"
+                                    required="required">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped b-t b-light" id="tabledata">
+                                <thead>
+                                    <tr>
+
+                                        <th>Payment ID</th>
+
+                                        <th>Payment</th>
+
+                                        <th>Tgl Pembayaran</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody id="viewtable2">
+                                    <tr></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Sisa Pembayaran</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="0" id="payment2" disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Note</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" placeholder="" id="note"></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary" id="editenable" onClick="button_action('edit')">Edit Shipment
+                            Detail</button>
+                        <button class="btn btn-primary" id="edit_shipment"
+                            onClick="button_action('edit_shipment')">Edit</button>
+                        <button class="btn btn-primary" id="edit_cancel"
+                            onClick="button_action('cancel')">Cancel</button>
+
+
+                    </div>
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="Modal_item" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal" action="javascript:void(0);" id="item_form">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Shipment Item Detail ID</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" value="" id="item_detail" required="required">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-primary" value="add" id="edit_trip" onClick="button_action('d')"
+                                formnovalidate="formnovalidate">Edit Trip ID</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Price</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="0" id="price" disabled="disabled"
+                                readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Quantity</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="1" id="quantity"
+                                onkeyup="this.value = quantity_item(this.value, 1, 10000000000)" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Sub total</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="0" id="item_sub_total" disabled="disabled"
+                                required="required">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Discount</label>
+
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="persent2" value="0" placeholder="Persent"
+                                onkeyup="this.value = discount2(this.value, 0, 100)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Total</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="0" id="item_detail_total" disabled="disabled"
+                                value="0" required="required">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Note</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="3" placeholder="" id="item_note"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="line line-dashed line-lg pull-in"></div>
+
+                    <div class="form-group text-center">
+
+                        <button class="btn btn-primary" id="modal_submit" onClick="button_action('modal')">Add
+                            Item</button>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="Modal_edit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal" action="javascript:void(0);" id="item_form">
+
+                    <div class="form-group" style="display:none">
+                        <label class="col-sm-2 control-label">ID</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" value="" id="edit_item_id" required="required"
+                                disabled="disabled">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Shipment Item Detail ID</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" value="" id="edit_item_detail" required="required"
+                                disabled="disabled">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Price</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="0" id="edit_price" disabled="disabled"
+                                readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Quantity</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="1" id="edit_quantity"
+                                onkeyup="this.value = quantity_item(this.value, 1, 10000000000)" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Sub total</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="0" id="edit_item_sub_total"
+                                disabled="disabled" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Discount</label>
+
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="edit_persent2" value="0" placeholder="Persent"
+                                onkeyup="this.value = discount2(this.value, 0, 100)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Total</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="0" id="edit_item_detail_total"
+                                disabled="disabled" value="0" required="required">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Note</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="3" placeholder="" id="edit_item_note"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="line line-dashed line-lg pull-in"></div>
+
+                    <div class="form-group text-center">
+
+                        <button class="btn btn-primary" id="edit_modal_submit"
+                            onClick="button_action('edit_modal_item')">Edit Item</button>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="testprint" style="display:none;">
+    <table id="testtable" class="table testtable" cellpadding="0" cellspacing="0" border="0" class="display"
+        width="100%">
+    </table>
+</div>
+<script>
+    $("#cetak1").click(function () {
+        $('#testtable').html($('#myTable').html());
+
+        $("#testtable td:last-child").remove()
+        $("#testtable th:last-child").remove()
+
+        $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Daftar Pengiriman" });
+
+    });
+
+</script>
+
+
+<script>
+
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = ("0" + (d.getMonth() + 1)).slice(-2);
+    var day = ("0" + d.getDate()).slice(-2)
+    var hour = ("0" + d.getHours()).slice(-2);
+    var m = ("0" + d.getMinutes()).slice(-2);
+    var ws = "" + hour + ":" + m;
+
+    var sdate = "" + year + "-" + month + "-" + day;
+    $('#s_date').val(sdate);
+    $('#s_time').val(ws);
+
+
+    document.getElementById('payment2').readOnly = true;
+
+    function button_action(a) {
+        if (a == "add_item") {
+            var a = "" + document.getElementById('c_id').readOnly + "";
+            var b = "" + document.getElementById('s_t_id').readOnly + "";
+            var c = "" + document.getElementById('s_t_d_id').readOnly + "";
+
+            if (a != "false" && b != "false" && c != "false") {
+                add_item();
+            }
+        }
+        else if (a == "add_shipmemnt") {
+
+        }
+        else if (a == 'a') {
+            $('#c_id').val("");
+            document.getElementById('c_id').readOnly = false;
+        }
+        else if (a == 'b') {
+            $('#s_t_id').val("");
+            document.getElementById('s_t_id').readOnly = false;
+        }
+        else if (a == 'c') {
+            $('#s_t_d_id').val("");
+            document.getElementById('s_t_d_id').readOnly = false;
+        }
+        else if (a == 'd') {
+            document.getElementById('item_form').reset();
+            document.getElementById('item_detail').readOnly = false;
+
+        }
+        else if (a == 'modal') {
+            var a = "" + document.getElementById('s_t_d_id').readOnly + "";
+
+            if (a != "false" && b != "false" && c != "false") {
+                add_item();
+
+            }
+
+            modal_submit();
+        }
+
+        else if (a == 'edit_modal_item') {
+            if (confirm('Ketika anda mengubah data ini, maka data di database langsung berubah')) {
+                modal_submit_edit();
+            }
+
+        }
+        else if (a == 'edit_shipment') {
+            formsubmit();
+            $('#edit_cancel').hide();
+            $('#edit_shipment').hide();
+            document.getElementById('fieldisable').disabled = true;
+            detailbutton('' + $('#s_id').val() + '');
+        }
+        else if (a == 'edit') {
+            $('#edit_cancel').show();
+            $('#edit_shipment').show();
+            document.getElementById('fieldisable').disabled = false;
+        }
+
+
+        else if (a == 'cancel') {
+            $('#edit_cancel').hide();
+            $('#edit_shipment').hide();
+            document.getElementById('fieldisable').disabled = true;
+            detailbutton('' + $('#s_id').val() + '');
+        }
+    }
+
+    function formsubmit() {
+
+        var scusid = $('#c_id').val().split("-");
+        var trip = $('#s_t_d_id').val().split("-");
+        var sdate = '' + $('#s_date').val() + ' ' + $('#s_time').val() + ':00';
+        $.post("process/listshipment.php", {
+            action: 'edit',
+            id: '' + $('#s_id').val() + '',
+            cusid: '' + scusid[0] + '',
+            tripid: '' + trip[0] + '',
+            receiver: '' + $('#receiver').val() + '',
+            rcontact: '' + $('#r_contact').val() + '',
+            date: '' + sdate + '',
+            note: '' + $('#note').val() + '',
+            extra: '' + $('#extra').val() + '',
+            discount: '' + $('#persent').val() + ''
+        },
+            function (data) {
+                alert(data);
+                $('#edit_cancel').hide();
+                $('#edit_shipment').hide();
+                document.getElementById('fieldisable').disabled = true;
+                detailbutton('' + $('#s_id').val() + '');
+            });
+
+    }
+
+    function minmax(value, min, max) {
+        if (parseInt(value) < min || isNaN(value))
+            return 0;
+        else if (parseInt(value) > max)
+            return 0;
+        else return value;
+    }
+
+    function quantity_item(value, min, max) {
+        if (parseInt(value) < min || isNaN(value)) {
+            return 1;
+        }
+        else if (parseInt(value) > max) {
+            return 1;
+        }
+        else {
+
+            count(value, $('#persent2').val());
+            return value;
+
+        }
+    }
+
+
+
+    function count(q, d) {
+        var price = parseInt($('#price').val());
+        $('#item_sub_total').val(price * q);
+        var subtotal = parseInt($('#item_sub_total').val());
+        if (d != 0) {
+            var total = d / 100;
+            $('#item_detail_total').val(subtotal - (subtotal * total));
+        }
+        else { $('#item_detail_total').val(subtotal); }
+    }
+
+    function count2(extra, dis, dp) {
+
+        var total = parseInt($('#total').val());
+        var extra1 = parseInt(extra);
+        var discount1 = parseInt(dis);
+        var payment = parseInt($('#payment2').val());
+        var total2 = parseInt($('#total_price').val());
+
+        if (dis != "0") {
+            var discount = discount1 / 100;
+            var totalp = (extra1 + total) - ((extra1 + total) * discount);
+
+            $('#payment2').val(totalp - (total2 - payment));
+            $('#total_price').val(totalp);
+        }
+        else {
+            $('#payment2').val((total + extra1) - (total2 - payment));
+            $('#total_price').val((total + extra1));
+        }
+
+
+
+    }
+    function discount(value, min, max) {
+
+        if (parseInt(value) < min || isNaN(value)) {
+
+
+            return 0;
+        }
+        else if (parseInt(value) > max) {
+
+            return 100;
+        }
+        else {
+            var value2 = 0;
+            if (value != "") {
+                value2 = value;
+            }
+            count2($('#extra').val(), value2, $('#dp').val());
+            return value;
+
+        }
+
+    }
+    function extra_charge(value, min, max) {
+
+        if (parseInt(value) < min || isNaN(value)) {
+            return 0;
+        }
+        else if (parseInt(value) > max) {
+
+            return 100;
+        }
+        else {
+            var value2 = 0;
+            if (value != "") {
+                value2 = value;
+            }
+            count2(value2, $('#persent').val(), $('#dp').val());
+            return value;
+        }
+
+
+    }
+    function discount2(value, min, max) {
+
+        if (parseInt(value) < min || isNaN(value)) {
+            return 0;
+        }
+        else if (parseInt(value) > max) {
+
+            return 100;
+        }
+        else {
+
+            count($('#quantity').val(), value);
+            return value;
+
+
+        }
+
+    }
+
+    getid();
+    var trip;
+    $(".datepicker-input").each(function () {
+        $(this).datepicker();
+    });
+
+    function add_item() {
+        $('#Modal_item').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+        $("#Modal_item").modal('show');
+        trip = $('#s_t_id').val().split("-");
+    }
+
+    function getid() {
+        $.post("process/addshipment.php", {
+            action: 'getid'
+        },
+            function (data) {
+                var jsondata = JSON.parse(data);
+                var d = new Date();
+                var year = d.getYear() - 100;
+                var month = ("0" + (d.getMonth() + 1)).slice(-2);
+                var num = parseInt(jsondata[0].numrow) + 1;
+                document.getElementById("s_id").value = "SPM" + year + month + num;
+            });
+    }
+
+
+    $('#s_t_id').autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+            $.ajax({
+                url: "process/addshipment.php",
+                type: "POST",
+                data: {
+                    'action': 'get_item',
+                    'trip': '' + $('#s_t_id').val() + '',
+                    'name': '' + $('#item_detail').val() + ''
+                },
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.label,
+                            value: item.value,
+                            price: item.price
+                        }
+                    }));
+                }
+            });
+        },
+        autoFocus: true,
+        select: function (event, ui) {
+
+            $('#item_detail').val('');
+            $('#item_detail').val(ui.item.value);
+            $('#price').val(ui.item.price);
+            document.getElementById('item_detail').readOnly = true;
+
+
+            return false;
+
+        }
+
+    });
+    $('#c_id').autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+            $.ajax({
+                url: "process/addshipment.php",
+                type: "POST",
+                data: {
+                    'action': 'get_cus',
+                    'name': '' + $('#c_id').val() + ''
+                },
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        }
+                    }));
+                }
+            });
+        },
+        autoFocus: true,
+        select: function (event, ui) {
+            $('#c_id').val('');
+            $('#c_id').val(ui.item.value);
+            document.getElementById('c_id').readOnly = true;
+
+            return false;
+        }
+
+    });
+    $('#s_t_id').autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+            $.ajax({
+                url: "process/addshipment.php",
+                type: "POST",
+                data: {
+                    'action': 'tripdata',
+                    'id': '',
+                    'tripid': '' + $('#s_t_id').val() + '',
+                    'departure': '',
+                    'arrival': '',
+                    'note': ''
+                },
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        }
+                    }));
+                }
+            });
+
+        },
+        autoFocus: true,
+        select: function (event, ui) {
+            $('#s_t_id').val('');
+            $('#s_t_id').val(ui.item.value);
+            document.getElementById('s_t_id').readOnly = true;
+
+            return false;
+        }
+
+    });
+    $('#s_t_d_id').autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+            $.ajax({
+                url: "process/addshipment.php",
+                type: "POST",
+                data: {
+                    'action': 'tripdetaildata',
+                    'tripdetailid': '' + $('#s_t_d_id').val() + '',
+                    'tripid': '' + $('#s_t_id').val() + ''
+
+                },
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        }
+                    }));
+                }
+            });
+
+        },
+        autoFocus: true,
+        select: function (event, ui) {
+            $('#s_t_d_id').val('');
+            $('#s_t_d_id').val(ui.item.value);
+            document.getElementById('s_t_d_id').readOnly = true;
+
+            return false;
+        }
+
+    });
+
+    $('#item_detail').autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+            $.ajax({
+                url: "process/addshipment.php",
+                type: "POST",
+                data: {
+                    'action': 'get_item',
+                    'trip': '' + $('#s_t_id').val() + '',
+                    'name': '' + $('#item_detail').val() + ''
+                },
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.label,
+                            value: item.value,
+                            price: item.price
+                        }
+                    }));
+                }
+            });
+        },
+        autoFocus: true,
+        select: function (event, ui) {
+
+            $('#item_detail').val('');
+            $('#item_detail').val(ui.item.value);
+            $('#price').val(ui.item.price);
+            document.getElementById('item_detail').readOnly = true;
+            $('#quantity').val('1');
+            $('#item_sub_total').val(ui.item.price);
+            $('#item_detail_total').val(ui.item.price);
+            $('#persent2').val('0');
+
+            count(1, 0);
+
+            return false;
+
+        }
+
+    });
+
+    function modal_submit() {
+
+        $.post("process/listshipment.php", {
+            action: 'add_item_detail',
+            item_id: "" + $('#item_detail').val() + "",
+            shipment_id: "" + $('#s_id').val() + "",
+            price: "" + $('#price').val() + "",
+            quantity: "" + $('#quantity').val() + "",
+            discount: "" + $('#persent2').val() + "",
+            note: "" + $('#item_note').val() + ""
+        },
+
+            function (data) {
+                var scusid = data.split("-");
+                if (scusid[0] == 'yes') {
+
+                    var tbl_row = document.getElementById("viewtable").rows.length + 1;
+                    var tr = "<tr id=\"" + scusid[1] + "\"><td>" + scusid[1] + "</td><td>" + $('#price').val() + "</td><td>" + $('#quantity').val() + "</td><td>" + $('#persent2').val() + "</td><td>" + $('#item_detail_total').val() + "</td><td>" + $('#item_note').val() + "</td>";
+                    var td1 = "<td><button class='btn btn-sm btn-default' type='submit' onClick=\"edititem('" + scusid[1] + "')\">Edit</button>    ";
+                    var td2 = "<button class='btn btn-sm btn-default' type='submit' onClick=\"deleteitem('" + tbl_row + "')\">Delete</button></td></tr>";
+                    $('#viewtable').append(tr + td1 + td2);
+                    var total = parseInt($('#total').val());
+                    var total2 = parseInt($('#item_detail_total').val());
+                    $('#total').val(total + total2);
+                    $('#total_price').val($('#total').val());
+                    document.getElementById('item_form').reset();
+                    document.getElementById('item_detail').readOnly = false;
+                }
+            });
+
+    }
+
+    function modal_submit_edit() {
+        var id = $('#edit_item_id').val().split('-');
+        $.post("process/listshipment.php", {
+            action: 'edit_item_detail',
+            id: "" + id[0] + "",
+            item_id: "" + $('#edit_item_detail').val() + "",
+            shipment_id: "" + $('#s_id').val() + "",
+            price: "" + $('#edit_price').val() + "",
+            quantity: "" + $('#edit_quantity').val() + "",
+            discount: "" + $('#edit_persent2').val() + "",
+            note: "" + $('#edit_item_note').val() + ""
+        },
+
+            function (data) {
+
+                if (data == 'yes') {
+                    var Cell = document.getElementById("viewtable").rows[id[1]];
+                    var total = parseInt($('#total').val());
+                    var total2 = parseInt(Cell.cells[4].innerHTML);
+                    var total3 = parseInt($('#edit_item_note').val());
+                    $('#total').val(total - total2);
+                    $('#total').val(total + total3);
+
+                    $('#total_price').val($('#total').val());
+                    document.getElementById('item_form').reset();
+                    document.getElementById('item_detail').readOnly = false;
+
+                    Cell.cells[0].innerHTML = "" + id[0] + "";
+                    Cell.cells[2].innerHTML = "" + $('#edit_price').val() + "";
+                    Cell.cells[3].innerHTML = "" + $('#edit_quantity').val() + "";
+                    Cell.cells[4].innerHTML = "" + $('#edit_persent2').val() + "";
+                    Cell.cells[5].innerHTML = "" + $('#edit_item_detail_total').val() + "";
+                    Cell.cells[6].innerHTML = "" + $('#edit_item_note').val() + "";
+
+                }
+            });
+
+    }
+
+    function edititem(id) {
+        var id2 = id.split('-');
+        $.post("process/listshipment.php", {
+            action: 'show_data_edit',
+            id: "" + id2[0] + ""
+        },
+
+            function (data) {
+                var jsondata = JSON.parse(data);
+                document.getElementById('edit_item_id').value = '' + id + '';
+                document.getElementById('edit_item_detail').value = '' + jsondata[0].shipment_item_detail_id + '';
+                document.getElementById('edit_price').value = '' + jsondata[0].price + '';
+                document.getElementById('edit_quantity').value = '' + jsondata[0].quantity + '';
+                document.getElementById('edit_persent2').value = '' + jsondata[0].discount + '';
+                var total = (parseInt(jsondata[0].quantity) * parseInt(jsondata[0].price)) - ((parseInt(jsondata[0].quantity) * parseInt(jsondata[0].price)) * parseInt(jsondata[0].discount)) / 100;
+                document.getElementById('edit_item_sub_total').value = '' + (parseInt(jsondata[0].quantity) * parseInt(jsondata[0].price)) + '';
+                document.getElementById('edit_item_detail_total').value = '' + total + '';
+                document.getElementById('edit_item_note').value = '' + jsondata[0].note + '';
+
+
+            });
+
+
+        $("#Modal_edit").modal('show');
+    }
+
+    function deleteitem(id) {
+
+        $.post("process/listshipment.php", {
+            action: 'delete_data_item',
+            id: "" + id + ""
+        },
+            function (data) {
+                alert(data);
+                var Row = document.getElementById(id);
+                document.getElementById("viewtable").deleteRow(Row);
+            });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    $('.clockpicker').clockpicker()
+        .find('input').change(function () {
+            console.log(this.value);
+        });
+    var input = $('#single-input').clockpicker({
+        placement: 'bottom',
+        align: 'left',
+        autoclose: true,
+        'default': 'now'
+    });
+
+    $('.clockpicker-with-callbacks').clockpicker({
+        donetext: 'Done'
+
+    })
+
+
+    // Manually toggle to the minutes view
+
+    if (/mobile/i.test(navigator.userAgent)) {
+        $('input').prop('readOnly', true);
+    }
+
+</script>
+
+
+<script type="text/javascript">
+
+    view();
+
+    function view() {
+        var dataTable = $('#myTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "process/listshipment.php",
+                data: { 'action': 'view' },
+                type: "post",
+                error: function () {
+                    $(".myTable-error").html("");
+                    $("#myTable").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                    //$("#myTable").css("display","none");
+                }
+            }
+        });
+    }
+
+    function detailbutton(id) {
+
+        $('#Modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+
+        $('#editenable').show();
+        $('#editsubmit').hide();
+        $('#editcancel').hide();
+
+        $.post("process/listshipment.php", {
+            action: 'show_data_detail',
+            id: "" + id + ""
+        },
+
+            function (data) {
+                var jsondata = JSON.parse(data);
+                document.getElementById('s_id').value = '' + jsondata[0].shipment_id + '';
+                document.getElementById('c_id').value = '' + jsondata[0].customer + '';
+                document.getElementById('c_id').readOnly = true;
+                document.getElementById('s_t_id').value = '' + jsondata[0].ship_trip + '';
+                document.getElementById('s_t_id').readOnly = true;
+                document.getElementById('s_t_d_id').value = '' + jsondata[0].ship_trip_detail + '';
+                document.getElementById('s_t_d_id').readOnly = true;
+                document.getElementById('receiver').value = '' + jsondata[0].receiver + '';
+                document.getElementById('r_contact').value = '' + jsondata[0].receiver_contact + '';
+                document.getElementById('s_date').value = '' + jsondata[0].DATEONLY + '';
+                document.getElementById('s_time').value = '' + jsondata[0].TIMEONLY + '';
+                document.getElementById('note').value = '' + jsondata[0].note + '';
+
+            });
+        $.post("process/listshipment.php", {
+            action: 'show_data_detailitem',
+            id: "" + id + ""
+        },
+
+            function (data) {
+                var jsondata = JSON.parse(data);
+                $('#viewtable').html('');
+                $('#total').val('0');
+                for (var i = 0; i < jsondata.length; i++) {
+
+                    var tr = "<tr id=\"" + jsondata[i].id2 + "\"><td style='display:none'>" + jsondata[i].id2 + "</td><td>" + jsondata[i].id + "</td><td>" + jsondata[i].price + "</td><td>" + jsondata[i].quantity + "</td><td>" + jsondata[i].discount + "</td><td>" + jsondata[i].total + "</td><td>" + jsondata[i].note + "</td>";
+                    var td1 = "<td><button class='btn btn-sm btn-default' type='submit' onClick=\"edititem('" + jsondata[i].id2 + "-" + i + "')\">Edit</button>    ";
+                    var td2 = "<button class='btn btn-sm btn-default' type='submit' onClick=\"deleteitem('" + jsondata[i].id2 + "')\">Delete</button></td></tr>";
+                    $('#viewtable').append(tr + td1 + td2);
+                    var total = parseInt($('#total').val());
+                    $('#total').val(total + parseInt(jsondata[i].total));
+                    $('#total_price').val($('#total').val());
+                    //document.getElementById('item_form').reset();
+                    document.getElementById('item_detail').readOnly = false;
+
+                }
+            });
+        $('#edit_cancel').hide();
+        $('#edit_shipment').hide();
+        viewdata(id);
+        $("#Modal").modal('show');
+
+
+
+    }
+
+    function deletebutton(id) {
+        if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+
+            $.post("process/listshipment.php", {
+                action: 'delete_data_ship',
+                id: "" + id + ""
+            },
+                function (data) {
+                    alert(data);
+                    $('#myTable').DataTable().ajax.reload();
+                });
+        }
+    }
+
+    function changestatus1(id) {
+        var valueOption = id.split("-");
+
+        var status1 = valueOption[1];
+        var idshipment = valueOption[0];
+        if (status1 == '0') {
+
+        }
+        else if (status1 == 'SPS15061') {
+            prosesstatus('SPS15061');
+        }
+        else if (status1 == 'SPS15062') {
+            prosesstatus('SPS15062');
+        }
+        else if (status1 == 'SPS15063') {
+            prosesstatus('SPS15063');
+        }
+        else if (status1 == 'SPS15101') {
+            prosesstatus('SPS15101');
+        }
+
+        function prosesstatus(no) {
+            $.post("process/listshipment.php", {
+                action: 'status_data_ship',
+                id: "" + idshipment + "",
+                no: "" + no + ""
+            },
+                function (data) {
+                    alert(data);
+                    $('#myTable').DataTable().ajax.reload();
+                });
+        }
+    }
+
+    function viewdata(id) {
+
+        $.post("process/listshipment.php", {
+            action: 'view2',
+            id: "" + id + ""
+        },
+            function (data) {
+                $('#viewtable2').html('');
+                var payment = 0;
+                var jsondata = JSON.parse(data);
+                for (var i = 0; i < jsondata.length; i++) {
+                    var tr = "<tr id='datapayment" + i + "'>";
+                    var td1 = "<td>" + jsondata[i].payment_id + "</td>";
+                    var td2 = "<td>" + jsondata[i].payment + "</td>";
+                    var td5 = "<td>" + jsondata[i].datetime + "</td>";
+                    var tr2 = '</tr>';
+                    $('#viewtable2').append(tr + td1 + td2 + td5 + tr2);
+                    payment += parseInt(jsondata[i].payment);
+                }
+
+                var total = parseInt($('#total_price').val());
+
+                document.getElementById('payment2').value = total - payment;
+            });
+
+    }
+
+
+
+    $('#editenable').click(function () {
+
+        $('#editenable').hide();
+        $('#editsubmit').show();
+        $('#editcancel').show();
+
+    });
+
+</script>

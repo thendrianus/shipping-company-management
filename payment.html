@@ -1,0 +1,380 @@
+<section class="panel panel-default">
+	<header class="panel-heading font-bold">
+		Shipment Payment
+	</header>
+	<div class="panel-body">
+
+		<form class="form-horizontal" action="javascript:void(0);" name="form_id" id="form_id">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Payment ID</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="paymentid" disabled="disabled">
+				</div>
+			</div>
+
+
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Shipment ID</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" value="" id="shipmentid">
+				</div>
+				<div class="col-sm-3">
+					<button class="btn btn-primary" id="editshipment">Edit Shipment ID</button>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Pembayaran</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="payment"
+						onkeyup="this.value = minmax(this.value, 0, 10000000000000)">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Sub Total Pembayaran</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="subtotal" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Total Pembayaran</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="total" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Sisa Pembayaran</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="sisa" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+
+			<div class="form-group text-center">
+
+				<button class="btn btn-primary" value="add" id="formsubmit">Tambah Pembayaran</button>
+				<button class="btn btn-primary" value="add" id="editsubmit">Edit Pembayaran</button>
+				<button class="btn btn-primary" value="add" id="editcancel">Cancel</button>
+
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light" id="tabledata">
+					<thead>
+						<tr>
+							<th>Edit</th>
+
+							<th>Payment Id</th>
+
+							<th>Shipment</th>
+
+							<th>Pembayaran</th>
+
+							<th>Tanggal</th>
+
+						</tr>
+					</thead>
+
+					<tbody id="viewtable">
+						<tr></tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="table-responsive">
+				<table class="table table-striped" id="myTable" cellpadding="0" cellspacing="0" border="0"
+					class="display" width="100%">
+					<thead>
+						<tr>
+							<th>Payment Id</th>
+
+							<th>Shipment</th>
+
+							<th>Pembayaran</th>
+
+							<th>Tanggal</th>
+
+						</tr>
+
+					</thead>
+
+				</table>
+
+			</div>
+			<a id="cetak1" href="#" class="list-group-item text-ellipsis">
+				<center> Print Report</center>
+			</a>
+
+
+
+		</form>
+	</div>
+</section>
+<div id="testprint" style="display:none;">
+	<table id="testtable" class="table testtable" cellpadding="0" cellspacing="0" border="0" class="display"
+		width="100%">
+	</table>
+</div>
+<script>
+	$("#cetak1").click(function () {
+		$('#testtable').html($('#myTable').html());
+
+		$("#testtable td:last-child").remove()
+		$("#testtable th:last-child").remove()
+
+		$("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Daftar Barang" });
+
+	});
+
+</script>
+<script>
+	$(document).ready(function () {
+		$('#editsubmit').hide();
+		$('#editcancel').hide();
+		viewtable();
+		getid();
+
+	});
+
+	function minmax(value, min, max) {
+		if (parseInt(value) < min || isNaN(value))
+			return 0;
+		else if (parseInt(value) > max)
+			return 0;
+		else return value;
+	}
+
+	function viewtable() {
+		var dataTable = $('#myTable').DataTable({
+			"processing": true,
+			"serverSide": true,
+			"ajax": {
+				url: "process/payment.php",
+				data: { 'action': 'view' },
+				type: "post",
+				error: function () {
+					$(".myTable-error").html("");
+					$("#myTable").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+					//$("#myTable").css("display","none");
+				}
+			}
+		});
+
+	}
+	function getid() {
+		$.post("process/payment.php", {
+			action: 'getid'
+		},
+			function (data) {
+				var jsondata = JSON.parse(data);
+				var d = new Date();
+				var year = d.getYear() - 100;
+				var month = ("0" + (d.getMonth() + 1)).slice(-2);
+				var num = parseInt(jsondata[0].numrow) + 1;
+				document.getElementById("paymentid").value = "SPP" + year + month + num;
+			});
+	}
+
+
+	$('#shipmentid').autocomplete({
+		minLength: 1,
+		source: function (request, response) {
+			$.ajax({
+				url: "process/payment.php",
+				type: "POST",
+				data: { 'action': 'getshipment', 'name': '' + $('#shipmentid').val() + '' },
+				dataType: "json",
+				success: function (data) {
+					response($.map(data, function (item) {
+						return {
+							label: item.label,
+							value: item.value
+						}
+					}));
+				}
+			});
+		},
+		autoFocus: true,
+		select: function (event, ui) {
+			$('#shipmentid').val(ui.item.value);
+			document.getElementById('shipmentid').readOnly = true;
+
+
+			var shipmentid = $('#shipmentid').val().split("-");
+			$.post("process/payment.php", {
+				action: 'view2',
+				id: "" + shipmentid[0] + ""
+			},
+				function (data) {
+					viewdata(data);
+				});
+			return false;
+		}
+
+	});
+
+	$('#editshipment').click(function () {
+		document.getElementById("form_id").reset();
+		$('#viewtable').html('');
+		$('#editsubmit').hide();
+		$('#editcancel').hide();
+		$('#formsubmit').show();
+		getid();
+		document.getElementById('shipmentid').readOnly = false;
+	});
+
+	$('#formsubmit').click(function () {
+		var a = "" + document.getElementById('shipmentid').readOnly + "";
+
+		if (a != "false") {
+			var shipmentid = $('#shipmentid').val().split("-");
+
+			$.post("process/payment.php", {
+				action: 'add',
+				id: "" + $('#paymentid').val() + "",
+				payment: "" + $('#payment').val() + "",
+				shipmentid: "" + shipmentid[0] + ""
+			},
+
+				function (data) {
+					viewdata(data);
+					alert("Pembayaran Berhasil Dimasukkan");
+					getid();
+					$('#shipmentid').val('');
+					document.getElementById('shipmentid').readOnly = false;
+					$('#payment').val('');
+					$('#myTable').DataTable().ajax.reload();
+				});
+		}
+		else { "Please Check Your Insert Data" }
+
+
+	});
+
+	function editbutton(id) {
+
+		document.form_id.action = "javascript:void(0);";
+		var Cell = document.getElementById("viewtable").rows[id];
+
+		document.getElementById('paymentid').value = Cell.cells[1].innerHTML;
+		document.getElementById('payment').value = Cell.cells[3].innerHTML;
+
+		$('#formsubmit').hide();
+		$('#editsubmit').show();
+		$('#editcancel').show();
+
+	}
+
+	function deletebutton2(no) {
+
+		var idid = no.split("-");
+		document.form_id.action = "javascript:void(0);";
+		alert(idid[0]);
+		if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+			$.post("php/payment.php", {
+				action: 'delete',
+				id: '' + idid[0] + '',
+				shmid: '' + idid[1] + ''
+			},
+				function (data) {
+					viewdata(data);
+					$('#list_table').DataTable().ajax.reload();
+				});
+
+
+		} else {
+			// Do nothing!
+		}
+	}
+	function TambahKoma(number) {
+		number = '' + number;
+		if (number.length > 3) {
+			var mod = number.length % 3;
+			var output = (mod > 0 ? (number.substring(0, mod)) : '');
+			for (i = 0; i < Math.floor(number.length / 3); i++) {
+				if ((mod == 0) && (i == 0)) {
+					output += number.substring(mod + (3 * i), mod + (3 * (i + 1)));
+				}
+				else {
+					output += ',' + number.substring(mod + (3 * i), mod + (3 * (i + 1)));
+				}
+			}
+			return (output);
+		}
+		else {
+			return (number);
+		}
+	}
+	$('#editsubmit').click(function () {
+		var a = "" + document.getElementById('shipmentid').readOnly + "";
+		if (a != "false") {
+			var shipmentid = $('#shipmentid').val().split("-");
+
+			$.post("process/payment.php", {
+				action: 'edit',
+				id: "" + $('#paymentid').val() + "",
+				payment: "" + $('#payment').val() + "",
+				shipmentid: "" + shipmentid[0] + ""
+			},
+
+				function (data) {
+					viewdata(data);
+					alert("Pembayaran Berhasil Di Edit");
+					getid();
+					$('#shipmentid').val('');
+					document.getElementById('shipmentid').readOnly = false;
+					$('#payment').val('');
+					$('#myTable').DataTable().ajax.reload();
+				});
+		}
+		else { "Please Check Your Data" }
+
+
+	});
+
+	$('#editcancel').click(function () {
+		$('#payment').val('');
+		$('#editsubmit').hide();
+		$('#editcancel').hide();
+		$('#formsubmit').show();
+
+
+	});
+
+	function viewdata(data) {
+
+		$('#viewtable').html('');
+		var jsondata = JSON.parse(data);
+		for (var i = 0; i < jsondata.length - 1; i++) {
+			var tr = "<tr id='tabletr" + i + "'>";
+			var td1 = "<td>" + jsondata[i].payment_id + "</td>";
+			var td2 = "<td>" + jsondata[i].shipment_id + "</td>";
+			var td5 = "<td>" + TambahKoma(jsondata[i].payment) + "</td>";
+			var td6 = "<td>" + jsondata[i].date + "</td>";
+			var td3 = "<td><button class='btn btn-sm btn-default' type='submit' onClick='editbutton(" + i + ")'>Edit</button>    ";
+			var td4 = "</td>";
+			var tr2 = '</tr>';
+			$('#viewtable').append(tr + td3 + td4 + td1 + td2 + td5 + td6 + tr2);
+
+		}
+
+		var subtotal = parseInt(jsondata[jsondata.length - 1].payment_id);
+		var total = parseInt(jsondata[jsondata.length - 1].shipment_id);
+
+
+		document.getElementById("subtotal").value = TambahKoma(subtotal);
+		document.getElementById("total").value = TambahKoma(total);
+		document.getElementById("sisa").value = TambahKoma(total - subtotal);
+
+	}
+
+</script>

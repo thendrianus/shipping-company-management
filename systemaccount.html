@@ -1,0 +1,292 @@
+<section class="panel panel-default">
+	<header class="panel-heading font-bold">
+		Tambahkan Login Account
+	</header>
+	<div class="panel-body">
+
+		<form class="form-horizontal" action="javascript:add();" name="from1" id="from1" autocomplete="off">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">System Account ID</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="account_id" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Username</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="username1" placeholder="username" maxlength="15"
+						required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Password</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="password" placeholder='password' maxlength="15"
+						required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Confirm Password</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="password2" placeholder='confirm password'
+						maxlength="15" required="required">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Account Status</label>
+				<div class="col-sm-9">
+					<select name="account" class="form-control m-b" id="status">
+						<option>Administrator</option>
+						<option>User</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+
+			<div class="form-group text-center">
+
+				<button class="btn btn-primary" value="add" id="formsubmit">Tambah Account</button>
+
+			</div>
+		</form>
+		<div class="line line-dashed line-lg pull-in"></div>
+		<div class="table-responsive">
+			<table class="table table-striped b-t b-light" id="tabledata">
+				<thead>
+					<tr>
+						<th> Edit / Delete</th>
+
+						<th>System Account ID</th>
+
+						<th>Username</th>
+
+						<th>Status</th>
+
+					</tr>
+				</thead>
+
+				<tbody id="viewtable">
+					<tr></tr>
+				</tbody>
+			</table>
+		</div>
+
+
+	</div>
+</section>
+
+<div id="Modals" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Edit Eccount</h4>
+			</div>
+			<div class="modal-body">
+
+				<form class="form-horizontal" action="javascript:void(0);" name="from2" id="from2" autocomplete="off">
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">System Account ID</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" value="" id="account_id_edit" disabled="disabled">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Username</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="username_edit" placeholder="username" readonly
+								onfocus="this.removeAttribute('readonly');" maxlength="15" required="required">
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Account Status</label>
+						<div class="col-sm-9">
+							<select name="account" class="form-control m-b" id="status_edit">
+								<option>Administrator</option>
+								<option>User</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Password</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="newpassword" placeholder='new password'
+								maxlength="15" required="required">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Confirm Password</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="newpassword2" placeholder='confirm password'
+								maxlength="15" required="required">
+						</div>
+					</div>
+
+					<div class="line line-dashed line-lg pull-in"></div>
+
+					<div class="form-group text-center">
+
+						<button class="btn btn-primary" value="add" onClick="formsubmits('edit')">Edit Account</button>
+
+					</div>
+					<div class="line line-dashed line-lg pull-in"></div>
+
+
+				</form>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	$(document).ready(function () {
+		$.post("process/systemaccount.php", {
+			action: 'view'
+		},
+			function (data) {
+				viewdata(data);
+			});
+	});
+
+	function formsubmits(i) {
+		if (i == 'edit') {
+			edit();
+		}
+		else if (i == 'cancel') {
+			cancel();
+		}
+	}
+
+	function add() {
+		if ($('#password').val() == $('#password2').val()) {
+			var id = $('#account_id').val();
+			$.post("process/systemaccount.php", {
+				action: 'add',
+				id: id,
+				username: $('#username1').val(),
+				password: $('#password').val(),
+				status: $('#status').val()
+
+			},
+				function (data) {
+
+					viewdata(data);
+				});
+		} else {
+			alert('Password anda tidak sama');
+		}
+	}
+
+	function edit() {
+		if ($('#newpassword').val() == $('#newpassword2').val()) {
+			var id = $('#account_id_edit').val();
+			$.post("process/systemaccount.php", {
+				action: 'edit',
+				id: id,
+				username: $('#username_edit').val(),
+				password: $('#newpassword').val(),
+				status: $('#status_edit').val()
+
+			},
+				function (data) {
+
+					$("#Modals").modal('hide');
+					viewdata(data);
+				});
+		} else {
+			alert('Password anda tidak sama');
+		}
+	}
+
+	function cancel() {
+
+		$.post("process/department.php", {
+			action: 'view',
+			id: "",
+			name: ""
+		},
+			function (data) {
+				viewdata(data);
+				document.getElementById('department_name').value = '';
+				$('#formsubmit').show();
+				$('#editsubmit').hide();
+				$('#editcancel').hide();
+			});
+	}
+
+
+
+	function viewdata(data) {
+
+
+		$('#viewtable').html('');
+		var jsondata = JSON.parse(data);
+		for (var i = 0; i < jsondata.length - 1; i++) {
+			var tr = "<tr id='tabletr" + i + "'>";
+			var td1 = "<td>" + jsondata[i].system_account_id + "</td>";
+			var td2 = "<td>" + jsondata[i].username + "</td>";
+			var td3 = "<td>" + jsondata[i].account_status + "</td>";
+			var td4 = "<td><button class='btn btn-sm btn-default' type='submit' onClick='editbutton(" + i + ")'>Edit</button>    ";
+			var td5 = "<button class='btn btn-sm btn-default' type='submit' onClick='deletebutton(" + i + ")'>Delete</button></td>";
+			var tr2 = '</tr>';
+			$('#viewtable').append(tr + td4 + td5 + td1 + td2 + td3 + tr2);
+		}
+		$('#username1').val('');
+		$('#password').val('');
+		$('#password2').val('');
+		var d = new Date();
+		var year = d.getYear() - 100;
+		var month = ("0" + (d.getMonth() + 1)).slice(-2);
+		var num = parseInt(jsondata[jsondata.length - 1].system_account_id) + 1;
+		document.getElementById("account_id").value = "LOG" + year + month + num;
+		var dataalert = jsondata[jsondata.length - 1].username;
+		if (dataalert !== 'view') {
+			alert(dataalert);
+		}
+		;
+
+
+	}
+
+
+	function editbutton(no) {
+
+		var Cell = document.getElementById("viewtable").rows[no];
+		document.getElementById('account_id_edit').value = Cell.cells[1].innerHTML;
+		document.getElementById('username_edit').value = Cell.cells[2].innerHTML;
+		document.getElementById('status_edit').value = Cell.cells[3].innerHTML;
+
+		$("#Modals").modal('show');
+	}
+
+	function deletebutton(no) {
+		if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+			var Cell = document.getElementById("viewtable").rows[no];
+			var id = Cell.cells[1].innerHTML;
+			$.post("process/systemaccount.php", {
+				action: 'delete',
+				id: id
+			},
+				function (data) {
+					viewdata(data);
+				});
+		} else {
+			// Do nothing!
+		}
+	}
+</script>

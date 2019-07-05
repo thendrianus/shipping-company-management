@@ -1,0 +1,309 @@
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">
+        Daftar Pelanggan
+    </header>
+    <div class="panel-body">
+
+        <form class="form-horizontal" action="javascript:void(0);">
+
+            <div class="panel-body" id="table1">
+                <div class="table-responsive">
+
+                    <table class="table table-striped" id="myTable" cellpadding="0" cellspacing="0" border="0"
+                        class="display" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Customer Id</th>
+
+                                <th>Title</th>
+
+                                <th>Customer Name</th>
+
+                                <th>Contact Person</th>
+
+                                <th>Email Address</th>
+
+                                <th>Note</th>
+
+                                <th>Detail / Delete</th>
+
+                            </tr>
+
+                        </thead>
+
+                    </table>
+
+                </div>
+                <a id="cetak1" href="#" class="list-group-item text-ellipsis">
+                    <center> Print Report</center>
+                </a>
+            </div>
+
+    </div>
+
+    </form>
+    </div>
+</section>
+
+<div id="Modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal" action="javascript:void(0);" disabled="disabled" id="cusform"
+                    name="cusform">
+                    <fieldset disabled="disabled" id="fieldisable">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Personal Cus ID </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="cusid" disabled="disabled"
+                                    required="required">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Customer Name</label>
+                            <div class="col-sm-2">
+                                <select name="account" class="form-control m-b" id="status">
+                                    <option>Mr</option>
+                                    <option>Mrs</option>
+                                    <option>Ms</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="firstname" required="required">
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="lastname" required="required">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">ID Card Number</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="cardnumber" required="required">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Address</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="address">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Contact Person</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="contact" required="required">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Email Address</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Country</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="country">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">City</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="city" required="required">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" value="add" id="editcity">Edit City</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Note</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" rows="3" placeholder="" id="note"></textarea>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <div class="line line-dashed line-lg pull-in"></div>
+
+                    <div class="form-group text-center">
+
+                        <button class="btn btn-primary" id="editenable" formnovalidate="formnovalidate">Edit Customer
+                            Detail</button>
+                        <button class="btn btn-primary" value="add" onClick="edit()" id="editsubmit">Edit</button>
+                        <button class="btn btn-primary" value="add" onClick="cancel()" id="editcancel"
+                            formnovalidate="formnovalidate">Cancel</button>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="testprint" style="display:none;">
+    <table id="testtable" class="table testtable" cellpadding="0" cellspacing="0" border="0" class="display"
+        width="100%">
+    </table>
+</div>
+<script>
+    $("#cetak1").click(function () {
+        $('#testtable').html($('#myTable').html());
+
+        $("#testtable td:last-child").remove()
+        $("#testtable th:last-child").remove()
+
+        $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Daftar Pelanggan" });
+
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    document.getElementById('city').readOnly = true;
+
+    function detailbutton(id) {
+
+        $('#Modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+        document.getElementById('fieldisable').disabled = true;
+        $('#editenable').show();
+        $('#editsubmit').hide();
+        $('#editcancel').hide();
+        $.post("process/listcustomer.php", {
+            action: 'show_data_cus',
+            id: "" + id + ""
+        },
+
+            function (data) {
+                var jsondata = JSON.parse(data);
+                document.getElementById('cusid').value = '' + jsondata[0].customer_id + '';
+                document.getElementById('status').value = '' + jsondata[0].title + '';
+                document.getElementById('firstname').value = '' + jsondata[0].firstname + '';
+                document.getElementById('lastname').value = '' + jsondata[0].lastname + '';
+                document.getElementById('cardnumber').value = '' + jsondata[0].id_card_number + '';
+                document.getElementById('address').value = '' + jsondata[0].address + '';
+                document.getElementById('contact').value = '' + jsondata[0].contact_person + '';
+                document.getElementById('email').value = '' + jsondata[0].email_address + '';
+                document.getElementById('country').value = '' + jsondata[0].country + '';
+                document.getElementById('city').value = '' + jsondata[0].city_id + '';
+                document.getElementById('note').value = '' + jsondata[0].note + '';
+
+            });
+        $("#Modal").modal('show');
+    }
+
+    function cancel() {
+        $('#editenable').show();
+        $('#editsubmit').hide();
+        $('#editcancel').hide();
+        detailbutton($('#cusid').val());
+        document.getElementById('fieldisable').disabled = true;
+        document.getElementById('city').readOnly = true;
+    }
+
+    view();
+
+    function view() {
+        var dataTable = $('#myTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "process/listcustomer.php",
+                data: { 'action': 'viewpersonal' },
+                type: "post",
+                error: function () {
+                    $(".myTable-error").html("");
+                    $("#myTable").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                    //$("#myTable").css("display","none");
+                }
+            }
+        });
+    }
+
+    function edit() {
+
+        var a = "" + document.getElementById('city').readOnly + "";
+
+        if (a != "false") {
+            var city = $('#city').val().split("-");
+
+            $.post("process/listcustomer.php", {
+                action: 'edit_cus',
+                id: "" + $('#cusid').val() + "",
+                title: "" + $('#status').val() + "",
+                firstname: "" + $('#firstname').val() + "",
+                lastname: "" + $('#lastname').val() + "",
+                cardid: "" + $('#cardnumber').val() + "",
+                address: "" + $('#address').val() + "",
+                contact: "" + $('#contact').val() + "",
+                email: "" + $('#email').val() + "",
+                country: "" + $('#country').val() + "",
+                city: "" + city[0] + "",
+                note: "" + $('#note').val() + ""
+            },
+
+                function (data) {
+
+                    if (data = '1') {
+                        cancel();
+                        $('#myTable').DataTable().ajax.reload();
+                    }
+                });
+
+        }
+        else { "Please Check Your Data" }
+
+    }
+
+
+    function deletebutton(id) {
+        if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+            $.post("process/listcustomer.php", {
+                action: 'delete_data_cus',
+                id: "" + id + ""
+            },
+                function (data) {
+                    alert(data);
+                    $('#myTable').DataTable().ajax.reload();
+                });
+        } else {
+            // Do nothing!
+        }
+
+    }
+
+    $('#editcity').click(function () {
+        document.cusform.action = "javascript:void(0);";
+        $('#city').val('');
+        document.getElementById('city').readOnly = false;
+    });
+
+
+    $('#editenable').click(function () {
+        document.getElementById('fieldisable').disabled = false;
+        $('#editenable').hide();
+        $('#editsubmit').show();
+        $('#editcancel').show();
+
+    });
+
+</script>

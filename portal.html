@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Pelayaran Karya Jaya</title>
+    <meta name="description"
+        content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/font.css" type="text/css" />
+    <link rel="stylesheet" href="js/calendar/bootstrap_calendar.css" type="text/css" />
+    <link rel="stylesheet" href="js/datepicker/datepicker.css" type="text/css" />
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-clockpicker.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables_themeroller.css">
+    <link rel="stylesheet" type="text/css" href="jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="css/dataTables.jqueryui.css">
+    <link rel="stylesheet" href="js/slider/slider.css" type="text/css" />
+
+    <!--[if lt IE 9]>
+    <script src="js/ie/html5shiv.js"></script>
+    <script src="js/ie/respond.min.js"></script>
+    <script src="js/ie/excanvas.js"></script>
+  <![endif]-->
+
+    <style>
+        #content2,
+        #contentmessage {
+            display: none;
+        }
+    </style>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- App -->
+
+    <script src="js/app.js"></script>
+    <script src="js/app.plugin.js"></script>
+
+    <script src="js/datepicker/bootstrap-datepicker.js"></script>
+
+    <script src="js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
+    <script src="js/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="js/charts/sparkline/jquery.sparkline.min.js"></script>
+    <script src="js/charts/flot/jquery.flot.min.js"></script>
+    <script src="js/charts/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/charts/flot/jquery.flot.resize.js"></script>
+    <script src="js/charts/flot/jquery.flot.pie.min.js"></script>
+    <script src="js/charts/flot/jquery.flot.orderBars.js"></script>
+    <script src="js/charts/flot/jquery.flot.grow.js"></script>
+    <script src="js/charts/flot/demo.js"></script>
+
+    <script src="js/slider/bootstrap-slider.js"></script>
+    <script src="js/calendar/bootstrap_calendar.js"></script>
+    <script src="js/calendar/demo.js"></script>
+
+    <script src="js/sortable/jquery.sortable.js"></script>
+
+    <script type="text/javascript" src="css/bootstrap-clockpicker.min.js"></script>
+
+    <script type="text/javascript" language="javascript" src="jquery.dataTables.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/charts/flot/jquery.flot.categories.js"></script>
+
+    <script>
+        $.post("process/dashboard.php", {
+            action: 'session'
+        },
+            function (data) {
+
+                var jsondata = JSON.parse(data);
+
+                if (jsondata[0].session == 'index') {
+                    window.top.location.href = "index.html";
+                }
+                else {
+                    $('#Account_username_edit').val('' + jsondata[0].session + '');
+                    $('#Account_status_edit').val('' + jsondata[0].session2 + '');
+                    $('#Account_account_id_edit').val('' + jsondata[0].session3 + '');
+                    document.getElementById('username').innerHTML = jsondata[0].session;
+                    if (jsondata[0].session2 != 'Administrator') {
+                        $("#system").hide();
+                        $("#PrintReport").hide();
+                        $("#cetak1").hide();
+                        $("#cetak2").hide();
+                        $("#cetak3").hide();
+                        $("#cetak4").hide();
+                    }
+
+                }
+            });
+    </script>
+
+</head>
+
+<body>
+
+    <section class="vbox">
+        <header class="bg-dark dk header navbar navbar-fixed-top-xs">
+            <div class="navbar-header aside-md text-center">
+                <a class="btn btn-link visible-xs " data-toggle="class:nav-off-screen,open" data-target="#nav,html">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <a href="#" class="navbar-brand "><img src="images/pkj.png" class="m-r-sm">PT. PKJ</a>
+                <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
+                    <i class="fa fa-cog"></i>
+                </a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
+
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+                        </span><strong id="username"> </strong> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight">
+                        <span class="arrow top"></span>
+                        <li>
+                            <a data-toggle="ajaxModal" id="modalaccount">Setting Account</a>
+                        </li>
+                        <li>
+                            <a data-toggle="ajaxModal" id="logout">Logout</a>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </header>
+        <section>
+            <section class="hbox stretch">
+
+                <aside class="bg-dark lter aside-md hidden-print" id="nav">
+                    <section class="vbox">
+                        <section class="w-f scrollable">
+                            <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0"
+                                data-size="5px" data-color="#333333">
+
+                                <nav class="nav-primary hidden-xs">
+                                    <ul class="nav">
+                                        <li class="active">
+                                            <a href="#" class="active" onClick="return navclick('menu')">
+                                                <i class="fa fa-bar-chart-o icon">
+                                                    <b class="bg-danger"></b>
+                                                </i>
+                                                <span>Dashbord</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#shipment">
+                                                <i class="fa fa-shopping-cart icon">
+                                                    <b class="bg-warning"></b>
+                                                </i>
+                                                <span class="pull-right">
+                                                    <i class="fa fa-angle-down text"></i>
+                                                    <i class="fa fa-angle-up text-active"></i>
+                                                </span>
+                                                <span>Pengiriman</span>
+                                            </a>
+                                            <ul class="nav lt">
+                                                <li>
+                                                    <a href="#" onClick="return navclick('addshipment')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Pengiriman Baru</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('shipmentlist')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Daftar Pengiriman</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('payment')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Pembayaran</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('addlistitem')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Daftar Harga</span>
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="#" onClick="return navclick('listitem')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Daftar Barang</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-user icon">
+                                                    <b class="bg-success"></b>
+                                                </i>
+                                                <span class="pull-right">
+                                                    <i class="fa fa-angle-down text"></i>
+                                                    <i class="fa fa-angle-up text-active"></i>
+                                                </span>
+                                                <span>Pelanggan</span>
+                                            </a>
+                                            <ul class="nav lt">
+                                                <li>
+                                                    <a href="#" onClick="return navclick('addcustomer')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Pelanggan Baru</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('listcustomer')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Daftar Pelanggan</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-truck icon">
+                                                    <b class="bg-success"></b>
+                                                </i>
+                                                <span class="pull-right">
+                                                    <i class="fa fa-angle-down text"></i>
+                                                    <i class="fa fa-angle-up text-active"></i>
+                                                </span>
+                                                <span>Ship Trip</span>
+                                            </a>
+                                            <ul class="nav lt">
+                                                <li>
+                                                    <a href="#" onClick="return navclick('shiptrip')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Ship Trip</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('shiptripdetail')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Ship Trip Detail</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li id="PrintReport">
+                                            <a href="#" class="active" onClick="return navclick('report')">
+                                                <i class="fa fa-bar-chart-o icon">
+                                                    <b class="bg-danger"></b>
+                                                </i>
+                                                <span>Print Report</span>
+                                            </a>
+                                        </li>
+
+                                        <li id="system">
+                                            <a href="#">
+                                                <i class="fa fa-book icon">
+                                                    <b class="bg-primary"></b>
+                                                </i>
+                                                <span class="pull-right">
+                                                    <i class="fa fa-angle-down text"></i>
+                                                    <i class="fa fa-angle-up text-active"></i>
+                                                </span>
+                                                <span>Sistem</span>
+                                            </a>
+                                            <ul class="nav lt">
+
+
+                                                <li>
+                                                    <a href="#" onClick="return navclick('uom')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>UOM</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('shipment_status')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Status Pengiriman</span>
+                                                    </a>
+
+                                                </li>
+
+                                                <li>
+                                                    <a href="#" onClick="return navclick('city')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>City</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                <li>
+                                                    <a href="#" onClick="return navclick('paymentstatus')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Payment Status</span>
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="#" onClick="return navclick('systemaccount')">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span>Login Account</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                    </ul>
+                                </nav>
+                                
+                            </div>
+                        </section>
+
+
+                    </section>
+                </aside>
+
+                <section id="content">
+                    <section class="vbox">
+                        <section class="scrollable padder">
+                            <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+                                <li><i class="fa fa-home"></i> Home</li>
+                                <li id="loctag1">Dashboard</li>
+                                <li class="active" id="loctag2"></li>
+                            </ul>
+
+                            <div id="content2">
+                                <center><img src="images/loading.gif" style="padding-top:10%" /></center>
+                            </div>
+                            <div class="form-group">
+
+                                <div id="contentmenu">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <section class="panel panel-default">
+                                                <header class="panel-heading font-bold">Omset Shipping</header>
+                                                <div class="panel-body">
+                                                    <select name="account" class="form-control" id="omset_pengiriman"
+                                                        onChange="chart1()">
+                                                        <option>SHT15111-Trip 7 Pekan Baru</option>
+                                                    </select>
+                                                    <div class="line line-dashed line-lg pull-in"></div>
+                                                    <div class="col-md-9">
+                                                        <div id="flot-1ine" style="height:210px"></div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div id="flot-pie" style="height:240px"></div>
+                                                    </div>
+                                                </div>
+                                                <footer class="panel-footer bg-white no-padder">
+                                                    <div class="row m-l-none m-r-none bg-light lter">
+                                                        <div class="col-sm-6 col-md-3 padder-v b-r b-light">
+                                                            <span class="fa-stack fa-2x pull-left m-r-sm">
+                                                                <i class="fa fa-circle fa-stack-2x text-info"></i>
+                                                                <i class="fa fa-dropbox fa-stack-1x text-white"></i>
+                                                            </span>
+                                                            <a class="clear" href="#">
+                                                                <span class="h3 block m-t-xs"><strong
+                                                                        id="setSumShipment"></strong></span>
+                                                                <small class="text-muted text-uc" id="">Total Item
+                                                                    2015</small>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-3 padder-v b-r b-light lt">
+                                                            <span class="fa-stack fa-2x pull-left m-r-sm">
+                                                                <i class="fa fa-circle fa-stack-2x text-warning"></i>
+                                                                <i class="fa fa-money fa-stack-1x text-white"></i>
+                                                                <span class="easypiechart pos-abt" data-percent="100"
+                                                                    data-line-width="4" data-track-Color="#fff"
+                                                                    data-scale-Color="false" data-size="50"
+                                                                    data-line-cap='butt' data-animate="2000"
+                                                                    data-target="#bugs" data-update="3000"></span>
+                                                            </span>
+                                                            <a class="clear" href="#">
+                                                                <span class="h3 block m-t-xs"><strong
+                                                                        id="revenue"></strong></span>
+                                                                <small class="text-muted text-uc">Income 2015</small>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-3 padder-v b-r b-light">
+                                                            <span class="fa-stack fa-2x pull-left m-r-sm">
+                                                                <i class="fa fa-circle fa-stack-2x text-danger"></i>
+                                                                <i class="fa fa-group fa-stack-1x text-white"></i>
+                                                                <span class="easypiechart pos-abt" data-percent="100"
+                                                                    data-line-width="4" data-track-Color="#f5f5f5"
+                                                                    data-scale-Color="false" data-size="50"
+                                                                    data-line-cap='butt' data-animate="3000"
+                                                                    data-target="#firers" data-update="5000"></span>
+                                                            </span>
+                                                            <a class="clear" href="#">
+                                                                <span class="h3 block m-t-xs"><strong
+                                                                        id="Jumlah_customer"></strong></span>
+                                                                <small class="text-muted text-uc">Total Customer</small>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-3 padder-v b-r b-light lt">
+                                                            <span class="fa-stack fa-2x pull-left m-r-sm">
+                                                                <i class="fa fa-circle fa-stack-2x icon-muted"></i>
+                                                                <i class="fa fa-random fa-stack-1x text-white"></i>
+                                                            </span>
+                                                            <a class="clear" href="#">
+                                                                <span class="h3 block m-t-xs"><strong
+                                                                        id="jumlah_trip"></strong></span>
+                                                                <small class="text-muted text-uc">Total Trip</small>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </footer>
+
+                                            </section>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <section class="panel panel-default">
+                                                <header class="panel-heading font-bold">New Order</header>
+                                                <div class="panel-body">
+                                                    <form class="form-horizontal" action="javascript:void(0);">
+
+
+
+                                                        <div class="table-responsive">
+                                                            <div id="print1">
+                                                                <table class="table table-striped" id="myTable1"
+                                                                    cellpadding="0" cellspacing="0" border="0"
+                                                                    class="display" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>customer</th>
+
+                                                                            <th>ship_trip</th>
+
+                                                                            <th>Date Time</th>
+
+                                                                            <th>note</th>
+
+                                                                        </tr>
+
+                                                                    </thead>
+
+                                                                </table>
+
+                                                            </div>
+
+                                                        </div>
+
+
+                                                    </form>
+
+                                                </div>
+                                                <a id="cetak1" href="#" class="list-group-item text-ellipsis">
+                                                    <center>
+                                                        Print Report
+                                                    </center>
+                                                </a>
+                                            </section>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <section class="panel panel-default">
+                                                <header class="panel-heading font-bold">Item On Progress</header>
+                                                <div class="panel-body">
+                                                    <form class="form-horizontal" action="javascript:void(0);">
+                                                        <div class="table-responsive" id="print2">
+
+                                                            <table class="table table-striped" id="myTable2"
+                                                                cellpadding="0" cellspacing="0" border="0"
+                                                                class="display" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Customer</th>
+
+                                                                        <th>Ship Trip</th>
+
+                                                                        <th>Date Time</th>
+
+                                                                        <th>Note</th>
+
+                                                                    </tr>
+
+                                                                </thead>
+
+                                                            </table>
+
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <a id="cetak2" href="#" class="list-group-item text-ellipsis">
+                                                    <center>
+                                                        Print Report
+                                                    </center>
+                                                </a>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <section class="panel panel-default">
+                                                <header class="panel-heading font-bold">Finish Shipping</header>
+                                                <div class="panel-body">
+                                                    <form class="form-horizontal" action="javascript:void(0);">
+                                                        <div class="table-responsive" id="print3">
+
+                                                            <table class="table table-striped" id="myTable3"
+                                                                cellpadding="0" cellspacing="0" border="0"
+                                                                class="display" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Customer</th>
+
+                                                                        <th>Ship Trip</th>
+
+                                                                        <th>Payment</th>
+
+                                                                        <th>Note</th>
+
+                                                                    </tr>
+
+                                                                </thead>
+
+                                                            </table>
+
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                                <a id="cetak3" href="#" class="list-group-item text-ellipsis">
+                                                    <center>
+                                                        Print Report
+                                                    </center>
+                                                </a>
+                                            </section>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <section class="panel panel-default">
+                                                <header class="panel-heading font-bold">Cancel Order</header>
+                                                <div class="panel-body">
+                                                    <form class="form-horizontal" action="javascript:void(0);">
+                                                        <div class="table-responsive" id="print4">
+
+                                                            <table class="table table-striped" id="myTable4"
+                                                                cellpadding="0" cellspacing="0" border="0"
+                                                                class="display" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Customer</th>
+
+                                                                        <th>Ship Trip</th>
+
+                                                                        <th>Date Time</th>
+
+                                                                        <th>Note</th>
+
+                                                                    </tr>
+
+                                                                </thead>
+
+                                                            </table>
+
+                                                        </div>
+                                                    </form>
+                                                    <div id="testprint" style="display:none;">
+                                                        <table id="testtable" class="table" cellpadding="0"
+                                                            cellspacing="0" border="0" class="display" width="100%">
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <a id="cetak4" href="#" class="list-group-item text-ellipsis">
+                                                    <center>
+                                                        Print Report
+                                                    </center>
+                                                </a>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+
+                                        <div class="col-md-6">
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--menu end-->
+                            </div>
+
+                            <div id="contentmessage">
+                                <center><img src="images/loading.gif" style="padding-top:10%" /></center>
+                            </div>
+                        </section>
+                    </section>
+                    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen"
+                        data-target="#nav"></a>
+                </section>
+                <aside class="bg-light lter b-l aside-md hide" id="notes">
+                    <div class="wrapper">Notification</div>
+                </aside>
+            </section>
+        </section>
+    </section>
+
+    <input type="text" class="form-control" value="" id="dataparse" disabled="disabled">
+
+
+    <div id="ModalAccount" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Edit Eccount</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form class="form-horizontal" action="javascript:void(0);" name="from2" id="from2"
+                        autocomplete="off">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">System Account ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" value="" id="Account_account_id_edit"
+                                    disabled="disabled">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Username</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="Account_username_edit"
+                                    placeholder="username" disabled="disabled" maxlength="15" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Status</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="Account_status_edit" placeholder="Status"
+                                    disabled="disabled" maxlength="15" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Old Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="Account_oldpassword"
+                                    placeholder='Old password' maxlength="15" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="Account_newpassword"
+                                    placeholder='new password' maxlength="15" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Confirm Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="Account_newpassword2"
+                                    placeholder='confirm password' maxlength="15" required>
+                            </div>
+                        </div>
+
+                        <div class="line line-dashed line-lg pull-in"></div>
+
+                        <div class="form-group text-center">
+
+                            <button class="btn btn-primary" value="add" onClick="edit_account()">Edit Account</button>
+
+                        </div>
+                        <div class="line line-dashed line-lg pull-in"></div>
+
+
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        start();
+        chart1();
+        view1();
+
+        function view1() {
+            var dataTable = $('#myTable1').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "process/dashboard.php",
+                    data: { 'action': 'view1' },
+                    type: "post",
+                    error: function () {
+                        $(".myTable-error").html("");
+                        $("#myTable1").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#myTable1").css("display", "none");
+                    }
+                }
+            });
+
+            var dataTable = $('#myTable2').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "process/dashboard.php",
+                    data: { 'action': 'view2' },
+                    type: "post",
+                    error: function () {
+                        $(".myTable-error").html("");
+                        $("#myTable2").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#myTable2").css("display", "none");
+                    }
+                }
+            });
+
+            var dataTable = $('#myTable3').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "process/dashboard.php",
+                    data: { 'action': 'view3' },
+                    type: "post",
+                    error: function () {
+                        $(".myTable-error").html("");
+                        $("#myTable3").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#myTable3").css("display", "none");
+                    }
+                }
+            });
+
+            var dataTable = $('#myTable4').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "process/dashboard.php",
+                    data: { 'action': 'view4' },
+                    type: "post",
+                    error: function () {
+                        $(".myTable-error").html("");
+                        $("#myTable4").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#myTable4").css("display", "none");
+                    }
+                }
+            });
+            var dataTable = $('#myTable6').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "process/dashboard.php",
+                    data: { 'action': 'view6' },
+                    type: "post",
+                    error: function () {
+                        $(".myTable-error").html("");
+                        $("#myTable6").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+
+                    }
+                }
+            });
+        }
+        function edit_account() {
+
+            var id = $('#Account_account_id_edit').val();
+            $.post("process/systemaccount.php", {
+                action: 'getpass',
+                id: id
+            },
+                function (data) {
+                    //alert(data+$('#Account_oldpassword').val());
+                    if (data == $('#Account_oldpassword').val()) {
+                        if ($('#Account_newpassword').val() == $('#Account_newpassword2').val()) {
+                            var id = $('#Account_account_id_edit').val();
+                            $.post("process/systemaccount.php", {
+                                action: 'user_edit',
+                                id: id,
+                                password: $('#Account_newpassword').val()
+
+                            },
+                                function (data) {
+                                    alert(data);
+                                    $('#Account_newpassword').val('');
+                                    $('#Account_newpassword2').val('');
+                                    $('#Account_oldpassword').val('');
+
+                                });
+                        } else {
+                            alert('Password anda tidak sama');
+                        }
+                    }
+                    else {
+                        alert('Password lama anda salah');
+                    }
+                });
+
+
+        }
+
+        function start() {
+            $.post("process/dashboard.php", {
+                action: 'setStartData'
+            },
+                function (data) {
+                    var jsondata = JSON.parse(data);
+
+
+                    document.getElementById('setSumShipment').innerHTML = jsondata[0].setSumShipment;
+                    document.getElementById('revenue').innerHTML = TambahKoma(jsondata[0].revenue);
+                    document.getElementById('Jumlah_customer').innerHTML = jsondata[0].cus;
+                    document.getElementById('jumlah_trip').innerHTML = jsondata[0].trip;
+
+                });
+
+            $.post("process/dashboard.php", {
+                action: 'omset_pengiriman'
+            },
+                function (data) {
+
+                    var jsondata = JSON.parse(data);
+                    $('#omset_pengiriman').html("");
+                    for (var i = 0; i < jsondata.length; i++) {
+                        var option = "<option>" + jsondata[i].name + "</option>";
+                        $('#omset_pengiriman').append(option);
+
+                    }
+                });
+
+        }
+
+        function TambahKoma(number) {
+            number = '' + number;
+            if (number.length > 3) {
+                var mod = number.length % 3;
+                var output = (mod > 0 ? (number.substring(0, mod)) : '');
+                for (i = 0; i < Math.floor(number.length / 3); i++) {
+                    if ((mod == 0) && (i == 0)) {
+                        output += number.substring(mod + (3 * i), mod + (3 * (i + 1)));
+                    }
+                    else {
+                        output += ',' + number.substring(mod + (3 * i), mod + (3 * (i + 1)));
+                    }
+                }
+                return (output);
+            }
+            else {
+                return (number);
+            }
+        }
+
+        function chart1() {
+
+            var myVariable = [];
+            var da = [];
+            var series = 0;
+            var trip = $('#omset_pengiriman').val().split("-");
+
+            $.ajax({
+                'async': false,
+                'type': "POST",
+                'global': false,
+                'url': "process/dashboard.php",
+                'data': {
+                    'action': 'chartdata',
+                    'trip': '' + trip[0] + ''
+                },
+                'success': function (data) {
+                    var jsondata = JSON.parse(data);
+                    var d1 = [];
+                    var da1 = [];
+
+                    for (var i = 0; i < jsondata.length; i++) {
+                        d1.push([jsondata[i].trip, parseInt(jsondata[i].num)]);
+                        da1[i] = {
+                            label: "" + jsondata[i].trip + "",
+                            data: jsondata[i].num
+                        }
+                    }
+
+
+                    myVariable = d1;
+                    series = jsondata.length;
+                    da = da1;
+                }
+            });
+
+            $("#flot-1ine").length && $.plot($("#flot-1ine"), [{
+                data: myVariable
+            }], {
+                    series: {
+                        lines: {
+                            show: true,
+                            lineWidth: 2,
+                            fill: true,
+                            fillColor: {
+                                colors: [{
+                                    opacity: 0.0
+                                }, {
+                                    opacity: 0.2
+                                }]
+                            }
+                        },
+                        points: {
+                            radius: 5,
+                            show: true
+                        },
+                        grow: {
+                            active: true,
+                            steps: 50
+                        },
+                        shadowSize: 2
+                    },
+                    grid: {
+                        hoverable: true,
+                        clickable: true,
+                        tickColor: "#f0f0f0",
+                        borderWidth: 1,
+                        color: '#f0f0f0'
+                    },
+                    colors: ["#65bd77"],
+                    xaxis: {
+                        mode: "categories",
+                        tickLength: 0
+                    },
+                    yaxis: {
+                        ticks: 5
+                    },
+                    tooltip: true,
+                    tooltipOpts: {
+                        content: "%y.4",
+                        defaultTheme: false,
+                        shifts: {
+                            x: 0,
+                            y: 20
+                        }
+                    }
+                });
+
+            $("#flot-pie").length && $.plot($("#flot-pie"), da, {
+                series: {
+                    pie: {
+                        combine: {
+                            color: "#999",
+                            threshold: 0.05
+                        },
+                        show: true,
+                        label: {
+                            show: false
+                        }
+                    }
+                },
+                colors: ["#99c7ce", "#999999", "#bbbbbb", "#dddddd", "#f0f0f0"],
+                legend: {
+                    show: false
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: false
+                },
+                tooltip: true,
+                tooltipOpts: {
+                    content: "%s: %p.0%"
+                }
+            });
+
+
+            var d1_1 = [
+                [10, 120],
+                [20, 70],
+                [30, 100],
+                [40, 60],
+                [50, 35]
+            ];
+
+
+            var databar = [{
+                label: "Product 1",
+                data: d1_1,
+                bars: {
+                    show: true,
+                    fill: true,
+                    lineWidth: 1,
+                    order: 1,
+                    fillColor: "#6783b7"
+                },
+                color: "#6783b7"
+            }];
+            $("#flot-bar").length && $.plot($("#flot-bar"), databar, {
+                xaxis: {
+
+                },
+                yaxis: {
+
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: false,
+                    borderWidth: 0
+                },
+                legend: {
+                    labelBoxBorderColor: "none",
+                    position: "left"
+                },
+                series: {
+                    shadowSize: 1
+                },
+                tooltip: true,
+            });
+        }
+    </script>
+
+    <script src="js/jquery-printme.js"></script>
+
+    <script>
+        $("#cetak1").click(function () {
+            $('#testtable').html($('#myTable1').html());
+            $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Barang Yang baru Di Input" });
+        });
+        $("#cetak2").click(function () {
+            $('#testtable').html($('#myTable2').html());
+            $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Barang Yang Di Proses" });
+        });
+        $("#cetak3").click(function () {
+            $('#testtable').html($('#myTable3').html());
+            $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Barang Yang Terkirim" });
+        });
+        $("#cetak4").click(function () {
+            $('#testtable').html($('#myTable4').html());
+            $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Barang Yang Cancel" });
+        });
+
+        $("#logout").click(function () {
+            $.post("process/dashboard.php", {
+                action: 'logout'
+            },
+                function (data) {
+                    window.top.location.href = "index.html";
+                });
+        });
+        $("#modalaccount").click(function () {
+            $("#ModalAccount").modal('show');
+        });
+    </script>
+
+    <script>
+        function navclick(id) {
+
+            $('#content2').unload();
+            $('#content2').hide()
+            $('#contentmenu').hide();
+            $('#contentmessage').hide();
+            if (id == 'addshipment') {
+                $('#content2').load('addshipment.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Pengiriman";
+                document.getElementById("loctag2").innerHTML = "Pengiriman Baru";
+            } else if (id == 'shipmentlist') {
+                $('#content2').load('listshipment.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Pengiriman";
+                document.getElementById("loctag2").innerHTML = "Daftar Pengiriman";
+            } else if (id == 'addlistitem') {
+                $('#content2').load('listitemdetail.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Pengiriman";
+                document.getElementById("loctag2").innerHTML = "Tambah Daftar Barang";
+            } else if (id == 'listitem') {
+                $('#content2').load('shipmentitem.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Pengiriman";
+                document.getElementById("loctag2").innerHTML = "Daftar Barang";
+            } else if (id == 'paymentstatus') {
+                $('#content2').load('paymentstatus.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Status Pembayaran";
+                document.getElementById("loctag2").innerHTML = "";
+            } else if (id == 'addcustomer') {
+                $('#content2').load('addcustomer.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Pelanggan";
+                document.getElementById("loctag2").innerHTML = "Pelanggan Baru";
+            } else if (id == 'listcustomer') {
+                $('#content2').load('listcustomer.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Pelanggan";
+                document.getElementById("loctag2").innerHTML = "Daftar Pelanggan";
+            } else if (id == 'addemployee') {
+                $('#content2').load('addemployee.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Karyawan";
+                document.getElementById("loctag2").innerHTML = "Tambah Karyawan Baru";
+            } else if (id == 'systemaccount') {
+                $('#content2').load('systemaccount.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "System";
+                document.getElementById("loctag2").innerHTML = "Login Akun";
+            } else if (id == 'shipment_status') {
+                $('#content2').load('shipmentstatus.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "System";
+                document.getElementById("loctag2").innerHTML = "Status Pengiriman";
+            } else if (id == 'uom') {
+                $('#content2').load('uom.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "System";
+                document.getElementById("loctag2").innerHTML = "Unit Of Measurment";
+            } else if (id == 'city') {
+                $('#content2').load('city.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "System";
+                document.getElementById("loctag2").innerHTML = "City";
+            } else if (id == 'shiptrip') {
+                $('#content2').load('shiptrip.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Ship Trip";
+                document.getElementById("loctag2").innerHTML = "Ship Trip";
+            } else if (id == 'shiptripdetail') {
+                $('#content2').load('shiptripdetail.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Ship Trip";
+                document.getElementById("loctag2").innerHTML = "Ship Trip Detail";
+            } else if (id == 'payment') {
+                $('#content2').load('payment.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Shipment";
+                document.getElementById("loctag2").innerHTML = "Payment";
+            } else if (id == 'menu') {
+
+                $('#contentmenu').show();
+                document.getElementById("loctag1").innerHTML = "Dashboard";
+                document.getElementById("loctag2").innerHTML = "";
+            } else if (id == 'report') {
+                $('#content2').load('report.html');
+                $('#content2').show();
+                document.getElementById("loctag1").innerHTML = "Report";
+                document.getElementById("loctag2").innerHTML = "";
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<style>
+    .datepicker {
+        z-index: 1151 !important;
+    }
+</style>
+
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">Laporan pengiriman barang</header>
+    <div class="panel-body">
+
+        <form class="form-horizontal" action="javascript:void(0);" id="form_absent">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Filter Report</label>
+                <div class="col-sm-6">
+                    <select name="account" class="form-control m-b" id="filter">
+                        <option value="0">All Data</option>
+                        <option value="1">Item In Progress</option>
+                        <option value="2">Finish Shipping</option>
+                        <option value="3">Cancel Order</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Start Date</label>
+                <div class="col-sm-2">
+                    <input class="input-sm input-s datepicker-input form-control" size="16" type="date"
+                        value="2014-02-12" id="date1" required="required" data-date-format="yyyy-mm-dd">
+                </div>
+
+                <label class="col-sm-2 control-label">End Date</label>
+                <div class="col-sm-3">
+                    <input class="input-sm input-s datepicker-input form-control" size="16" type="date"
+                        value="2015-10-12" id="date2" required="required" data-date-format="yyyy-mm-dd">
+                </div>
+
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" value="add" id="formsubmit" onClick="view()">Proses Report</button>
+                </div>
+        </form>
+    </div>
+    <div class="line line-dashed line-lg pull-in"></div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped" id="myTable" cellpadding="0" cellspacing="0" border="0" class="display"
+            width="100%">
+            <thead>
+                <tr>
+                    <th>Shipment Id</th>
+
+                    <th>Customer</th>
+
+                    <th>Ship Trip</th>
+
+                    <th>Shipted Date</th>
+
+                    <th>Total</th>
+
+                    <th>Payment Status</th>
+
+                    <th>Shipment Status</th>
+
+                    <th>Note</th>
+
+                </tr>
+
+            </thead>
+
+        </table>
+
+    </div>
+    <a id="cetak1" href="#" class="list-group-item text-ellipsis">
+        <center> Print Report</center>
+    </a>
+
+    </div>
+</section>
+<div id="testprint" style="display:none;">
+    <label class="col-sm-2 control-label">Start Date</label>
+    <div class="col-sm-3">
+        <input class="input-sm input-s datepicker-input form-control" size="16" type="date" value="2014-02-12"
+            id="date3" required="required" data-date-format="yyyy-mm-dd">
+    </div>
+
+    <label class="col-sm-2 control-label">End Date</label>
+    <div class="col-sm-3">
+        <input class="input-sm input-s datepicker-input form-control" size="16" type="date" value="2015-10-12"
+            id="date4" required="required" data-date-format="yyyy-mm-dd">
+    </div>
+    <table id="testtable" class="table testtable" cellpadding="0" cellspacing="0" border="0" class="display"
+        width="100%">
+    </table>
+</div>
+<script>
+    $("#cetak1").click(function () {
+        $('#testtable').html($('#myTable').html());
+        $('#date3').val($('#date1').val());
+        $('#date4').val($('#date2').val());
+
+        $("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Laporan Pengiriman Barang" });
+
+    });
+
+</script>
+
+<script type="text/javascript">
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = ("0" + (d.getMonth() + 1)).slice(-2);
+    var day = ("0" + d.getDate()).slice(-2)
+    var hour = ("0" + d.getHours()).slice(-2);
+    var m = ("0" + d.getMinutes()).slice(-2);
+    var ws = "" + hour + ":" + m;
+
+    var sdate = "" + year + "-" + month + "-" + day;
+    $('#date2').val(sdate);
+    function view() {
+
+
+        var dataTable = $('#myTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "bDestroy": true,
+            "ajax": {
+                url: "process/report.php",
+                data: { 'action': 'view', 'filter': '' + $('#filter').val() + '', 'date1': '' + $('#date1').val() + '', 'date2': '' + $('#date2').val() + '' },
+                type: "post",
+                error: function () {
+                    $(".myTable-error").html("");
+                    $("#myTable").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                    //$("#myTable").css("display","none");
+                }
+
+            }
+        });
+    }
+    view1();
+
+    function view1() {
+
+        var dataTable = $('#myTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "bDestroy": true,
+            "ajax": {
+                url: "process/report.php",
+                data: { 'action': 'view', 'filter': '' + $('#filter').val() + '', 'date1': '' + $('#date1').val() + '', 'date2': '' + $('#date2').val() + '' },
+                type: "post",
+                error: function () {
+                    $(".myTable-error").html("");
+                    $("#myTable").append('<tbody class="myTable-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                    //$("#myTable").css("display","none");
+                }
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    // Manually toggle to the minutes view
+
+    if (/mobile/i.test(navigator.userAgent)) {
+        $('input').prop('readOnly', true);
+    }
+
+    $(".datepicker-input").each(function () {
+        $(this).datepicker();
+    });
+
+</script>

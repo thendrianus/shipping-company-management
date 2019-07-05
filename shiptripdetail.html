@@ -1,0 +1,363 @@
+<section class="panel panel-default">
+	<header class="panel-heading font-bold">
+		Tambahkan Ship Trip Detail
+	</header>
+	<div class="panel-body">
+
+		<form class="form-horizontal" action="javascript:void(0);">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Ship Trip Detail ID</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="ship_trip_detail_id" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Ship Trip ID</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" id="search_ship_trip_id">
+				</div>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" id="ship_trip_id" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Departure Date</label>
+				<div class="col-sm-3">
+					<input class="input-sm input-s datepicker-input form-control" size="16" type="date"
+						value="2014-02-12" data-date-format="yyyy-mm-dd" id="departure_date">
+				</div>
+				<div class="col-sm-2">
+					<div class="input-group clockpicker-with-callbacks">
+						<input type="time" class="form-control" value="10:10" id="departure_time">
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-time"></span>
+						</span>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Arrival Date</label>
+				<div class="col-sm-3">
+					<input class="input-sm input-s datepicker-input form-control" size="16" type="date"
+						value="2014-02-12" data-date-format="yyyy-mm-dd" id="arrival_date">
+				</div>
+				<div class="col-sm-2">
+					<div class="input-group clockpicker-with-callbacks">
+						<input type="time" class="form-control" value="10:10" id="arrival_time">
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-time"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Note</label>
+				<div class="col-sm-10">
+					<textarea class="form-control" type="number" rows="3" placeholder="" id="note"></textarea>
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+
+			<div class="form-group text-center">
+
+				<button class="btn btn-primary" value="add" id="formsubmit">Tambah Ship Trip Detail</button>
+				<button class="btn btn-primary" value="add" id="editsubmit">Edit Ship Trip Detail</button>
+				<button class="btn btn-primary" value="add" id="editcancel">Cancel</button>
+
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light" id="tabledata">
+					<thead>
+						<tr>
+							<th> Edit / Delete</th>
+
+							<th>Ship Trip Detail ID</th>
+
+							<th>Ship Trip ID</th>
+
+							<th>Departure Date</th>
+
+							<th>Arrival Date</th>
+
+							<th>Note</th>
+
+						</tr>
+					</thead>
+
+					<tbody id="viewtable">
+						<tr></tr>
+					</tbody>
+				</table>
+			</div>
+			<a id="cetak1" href="#" class="list-group-item text-ellipsis">
+				<center> Print Report</center>
+			</a>
+
+
+
+		</form>
+	</div>
+</section>
+
+<div id="testprint" style="display:none;">
+	<table id="testtable" class="table testtable" cellpadding="0" cellspacing="0" border="0" class="display"
+		width="100%">
+	</table>
+</div>
+<script>
+	$("#cetak1").click(function () {
+		$('#testtable').html($('#tabledata').html());
+
+		$("#testtable td:first-child").remove()
+		$("#testtable th:first-child").remove()
+
+		$("#testprint").printMe({ "path": "css/bootstrap.min.css", "title": "Ship Trip Detail" });
+
+	});
+
+</script>
+
+
+<script>
+	$(document).ready(function () {
+
+		var d = new Date();
+		var year = d.getFullYear();
+		var month = ("0" + (d.getMonth() + 1)).slice(-2);
+		var day = ("0" + d.getDate()).slice(-2)
+		var hour = ("0" + d.getHours()).slice(-2);
+		var m = ("0" + d.getMinutes()).slice(-2);
+		var ws = "" + hour + ":" + m;
+
+		var sdate = "" + year + "-" + month + "-" + day;
+		$('#arrival_time').val(ws);
+		$('#departure_time').val(ws);
+		$('#departure_date').val(sdate);
+		$('#arrival_date').val(sdate);
+
+		$(".datepicker-input").each(function () { $(this).datepicker(); });
+
+		$('#editsubmit').hide();
+		$('#editcancel').hide();
+		$.post("process/shiptripdetail.php", {
+			action: 'view',
+			id: "",
+			tripid: "",
+			departure: "",
+			arrival: "",
+			note: ""
+		},
+			function (data) {
+				viewdata(data);
+			});
+
+		$('#search_ship_trip_id').autocomplete({
+			minLength: 2,
+			source: function (request, response) {
+				$.ajax({
+					url: "process/shiptripdetail.php",
+					type: "POST",
+					data: { 'action': 'tripdata', 'id': '', 'tripid': '' + $('#search_ship_trip_id').val() + '', 'departure': '', 'arrival': '', 'note': '' },
+					dataType: "json",
+					success: function (data) {
+						response($.map(data, function (item) {
+							return {
+								label: item.label,
+								value: item.value
+							}
+						}));
+					}
+				});
+
+			},
+			autoFocus: true,
+			select: function (event, ui) {
+				$('#search_ship_trip_id').val('');
+				$('#ship_trip_id').val(ui.item.value);
+				return false;
+			}
+
+		});
+
+
+		$('#formsubmit').click(function () {
+			var shiptripid = $('#ship_trip_id').val().split("-");
+			var departure = '' + $('#departure_date').val() + ' ' + $('#departure_time').val() + ':00';
+			var arrive = '' + $('#arrival_date').val() + ' ' + $('#arrival_time').val() + ':00';
+
+			$.post("process/shiptripdetail.php", {
+				action: 'add',
+				id: '' + $('#ship_trip_detail_id').val() + '',
+				tripid: '' + shiptripid[0] + '',
+				departure: '' + departure + '',
+				arrival: '' + arrive + '',
+				note: '' + $('#note').val() + ''
+			},
+				function (data) {
+					document.getElementById('ship_trip_id').value = '';
+					document.getElementById('departure_date').value = '';
+					document.getElementById('arrival_date').value = '';
+					document.getElementById('note').value = '';
+					viewdata(data);
+				});
+		});
+
+
+	});
+
+	$('#editsubmit').click(function () {
+		var shiptripid = $('#ship_trip_id').val().split("-");
+		var departure = '' + $('#departure_date').val() + ' ' + $('#departure_time').val() + ':00';
+		var arrive = '' + $('#arrival_date').val() + ' ' + $('#arrival_time').val() + ':00';
+
+		$.post("process/shiptripdetail.php", {
+			action: 'edit',
+			id: '' + $('#ship_trip_detail_id').val() + '',
+			tripid: '' + shiptripid[0] + '',
+			departure: '' + departure + '',
+			arrival: '' + arrive + '',
+			note: '' + $('#note').val() + ''
+		},
+			function (data) {
+				viewdata(data);
+				$('#formsubmit').show();
+				$('#editsubmit').hide();
+				$('#editcancel').hide();
+			});
+	});
+
+	$('#editcancel').click(function () {
+
+		$.post("process/shiptripdetail.php", {
+			action: 'view',
+			id: "",
+			tripid: "",
+			departure: "",
+			arrival: "",
+			note: ""
+		},
+			function (data) {
+				viewdata(data);
+				document.getElementById('ship_trip_id').value = '';
+				document.getElementById('departure_date').value = '';
+				document.getElementById('arrival_date').value = '';
+				document.getElementById('note').value = '';
+				$('#formsubmit').show();
+				$('#editsubmit').hide();
+				$('#editcancel').hide();
+			});
+	});
+
+
+
+	function viewdata(data) {
+
+
+		$('#viewtable').html('');
+		var jsondata = JSON.parse(data);
+		for (var i = 0; i < jsondata.length - 1; i++) {
+			var tr = "<tr id='tabletr" + i + "'>";
+			var td1 = "<td>" + jsondata[i].ship_trip_detail_id + "</td>";
+			var td2 = "<td>" + jsondata[i].ship_trip_id + "</td>";
+			var td3 = "<td>" + jsondata[i].departure_date + "</td>";
+			var td4 = "<td>" + jsondata[i].arrival_date + "</td>";
+			var td5 = "<td>" + jsondata[i].note + "</td>";
+			var td6 = "<td><button class='btn btn-sm btn-default' type='submit' onClick='editbutton(" + i + ")'>Edit</button>    ";
+			var td7 = "<button class='btn btn-sm btn-default' type='submit' onClick='deletebutton(" + i + ")'>Delete</button></td>";
+			var tr2 = '</tr>';
+			$('#viewtable').append(tr + td6 + td7 + td1 + td2 + td3 + td4 + td5 + tr2);
+		}
+		var d = new Date();
+		var year = d.getYear() - 100;
+		var month = ("0" + (d.getMonth() + 1)).slice(-2);
+		var num = parseInt(jsondata[jsondata.length - 1].ship_trip_detail_id) + 1;
+		document.getElementById("ship_trip_detail_id").value = "STD" + year + month + num;
+		//$('#viewtable').append(jsondata[jsondata.length-1].shipment_status);
+		var dataalert = jsondata[jsondata.length - 1].ship_trip_id;
+		if (dataalert !== 'view') {
+			alert(dataalert);
+		}
+
+
+	}
+
+
+	function editbutton(no) {
+
+		var Cell = document.getElementById("viewtable").rows[no];
+
+		var departure_date = Cell.cells[3].innerHTML.substring(0, 10);
+		var arrival_date = Cell.cells[4].innerHTML.substring(0, 10);
+		var departure_time = Cell.cells[3].innerHTML.substring(11, 16);
+		var arrival_time = Cell.cells[4].innerHTML.substring(11, 16);
+
+		document.getElementById('ship_trip_detail_id').value = Cell.cells[1].innerHTML;
+		document.getElementById('ship_trip_id').value = Cell.cells[2].innerHTML;
+		document.getElementById('departure_date').value = departure_date;
+		document.getElementById('departure_time').value = departure_time;
+		document.getElementById('arrival_date').value = arrival_date;
+		document.getElementById('arrival_time').value = arrival_time;
+		document.getElementById('note').value = Cell.cells[5].innerHTML;
+
+		$('#formsubmit').hide();
+		$('#editsubmit').show();
+		$('#editcancel').show();
+	}
+
+	function deletebutton(no) {
+		if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+			var Cell = document.getElementById("viewtable").rows[no];
+
+			var id = Cell.cells[1].innerHTML;
+			$.post("process/shiptripdetail.php", {
+				action: 'delete',
+				id: id,
+				tripid: "",
+				departure: "",
+				arrival: "",
+				note: ""
+			},
+				function (data) {
+					viewdata(data);
+				});
+		} else {
+			// Do nothing!
+		}
+	}
+
+</script>
+
+<script type="text/javascript">
+
+	$('.clockpicker').clockpicker()
+		.find('input').change(function () {
+			console.log(this.value);
+		});
+	var input = $('#single-input').clockpicker({
+		placement: 'bottom',
+		align: 'left',
+		autoclose: true,
+		'default': 'now'
+	});
+
+	$('.clockpicker-with-callbacks').clockpicker({
+		donetext: 'Done'
+
+	})
+
+
+	// Manually toggle to the minutes view
+
+	if (/mobile/i.test(navigator.userAgent)) {
+		$('input').prop('readOnly', true);
+	}
+</script>

@@ -1,0 +1,204 @@
+<section class="panel panel-default">
+	<header class="panel-heading font-bold">
+		Tambahkan Status Pembayaran
+	</header>
+	<div class="panel-body">
+
+		<form class="form-horizontal" action="javascript:void(0);" name="form1" id="form1">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Payment Status ID</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="payment_status_id" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Payment Status</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="payment_status" maxlength="20" required="required">
+				</div>
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group text-center">
+
+				<button class="btn btn-primary" value="add" id="formsubmit" onClick="formsubmits('add')">Tambah
+					Status</button>
+				<button class="btn btn-primary" value="add" id="editsubmit" onClick="formsubmits('edit')">Edit
+					Status</button>
+				<button class="btn btn-primary" value="add" id="editcancel"
+					onClick="formsubmits('cancel')">Cancel</button>
+
+			</div>
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light" id="tabledata">
+					<thead>
+						<tr>
+							<th> Edit / Delete</th>
+
+							<th>Payment Status ID</th>
+
+							<th>Payment Status</th>
+
+						</tr>
+					</thead>
+
+					<tbody id="viewtable">
+						<tr></tr>
+					</tbody>
+				</table>
+			</div>
+
+
+			<div class="line line-dashed line-lg pull-in"></div>
+
+
+
+		</form>
+	</div>
+</section>
+
+
+
+<script>
+
+	$(document).ready(function () {
+		$('#editsubmit').hide();
+		$('#editcancel').hide();
+		$.post("process/paymentstatus.php", {
+			action: 'view',
+			id: "",
+			status: ""
+		},
+			function (data) {
+				viewdata(data);
+			});
+
+	});
+
+	function formsubmits(i) {
+		if (i == 'add') {
+			document.form1.action = "javascript:add();";
+		}
+		else if (i == 'edit') {
+			document.form1.action = "javascript:edit();";
+		}
+		else if (i == 'cancel') {
+			document.form1.action = "javascript:cancel();";
+		}
+	}
+
+	function add() {
+		var id = $('#payment_status_id').val();
+		$.post("process/paymentstatus.php", {
+			action: 'add',
+			id: id,
+			status: $('#payment_status').val()
+		},
+			function (data) {
+				document.getElementById('payment_status').value = '';
+				viewdata(data);
+			});
+	}
+
+
+
+	function edit() {
+
+		var id = $('#payment_status_id').val();
+		$.post("process/paymentstatus.php", {
+			action: 'edit',
+			id: id,
+			status: $('#payment_status').val()
+		},
+			function (data) {
+				viewdata(data);
+				$('#formsubmit').show();
+				$('#editsubmit').hide();
+				$('#editcancel').hide();
+			});
+	}
+
+	function cancel() {
+
+		$.post("process/paymentstatus.php", {
+			action: 'view',
+			id: "",
+			status: ""
+		},
+			function (data) {
+				viewdata(data);
+				document.getElementById('payment_status').value = '';
+				$('#formsubmit').show();
+				$('#editsubmit').hide();
+				$('#editcancel').hide();
+			});
+	}
+
+
+
+
+	function viewdata(data) {
+
+
+		$('#viewtable').html('');
+		var jsondata = JSON.parse(data);
+
+		for (var i = 0; i < jsondata.length - 1; i++) {
+			var tr = "<tr id='tabletr" + i + "'>";
+			var td1 = "<td>" + jsondata[i].payment_status_id + "</td>";
+			var td2 = "<td>" + jsondata[i].payment_status + "</td>";
+			var td3 = "<td><button class='btn btn-sm btn-default' type='submit' onClick='editbutton(" + i + ")'>Edit</button>    ";
+			var td4 = "<button class='btn btn-sm btn-default' type='submit' onClick='deletebutton(" + i + ")'>Delete</button></td>";
+			var tr2 = '</tr>';
+			$('#viewtable').append(tr + td3 + td4 + td1 + td2 + tr2);
+		}
+		var d = new Date();
+		var year = d.getYear() - 100;
+		var month = ("0" + (d.getMonth() + 1)).slice(-2);
+		var num = parseInt(jsondata[jsondata.length - 1].payment_status_id) + 1;
+		document.getElementById("payment_status_id").value = "PYS" + year + month + num;
+		//$('#viewtable').append(jsondata[jsondata.length-1].payment_status);
+		var dataalert = jsondata[jsondata.length - 1].payment_status;
+		if (dataalert !== 'view') {
+			alert(dataalert);
+		}
+		;
+
+
+	}
+
+
+	function editbutton(no) {
+		document.form1.action = "javascript:void(0);";
+		var Cell = document.getElementById("viewtable").rows[no];
+		document.getElementById('payment_status_id').value = Cell.cells[1].innerHTML;
+		document.getElementById('payment_status').value = Cell.cells[2].innerHTML;
+
+		$('#formsubmit').hide();
+		$('#editsubmit').show();
+		$('#editcancel').show();
+	}
+
+	function deletebutton(no) {
+		document.form1.action = "javascript:void(0);";
+		if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+			var Cell = document.getElementById("viewtable").rows[no];
+
+			var id = Cell.cells[1].innerHTML;
+			$.post("process/paymentstatus.php", {
+				action: 'delete',
+				id: id,
+				status: ""
+			},
+				function (data) {
+					document.getElementById('payment_status').value = '';
+					viewdata(data);
+				});
+		} else {
+			// Do nothing!
+		}
+	}
+
+</script>

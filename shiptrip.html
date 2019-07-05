@@ -1,0 +1,312 @@
+<section class="panel panel-default">
+	<header class="panel-heading font-bold">
+		Tambahkan Ship Trip
+	</header>
+	<div class="panel-body">
+
+		<form class="form-horizontal" action="javascript:void(0);">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Ship Trip ID</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" value="" id="ship_trip_id" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Ship Trip Name</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="ship_trip_name">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Ship From</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" id="search_ship_from">
+				</div>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" id="ship_from" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Destination</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" id="search_destination_city">
+				</div>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" id="destination_city" disabled="disabled">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Note</label>
+				<div class="col-sm-10">
+					<textarea class="form-control" rows="3" placeholder="" id="note"></textarea>
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+
+			<div class="form-group text-center">
+
+				<button class="btn btn-primary" value="add" id="formsubmit">Tambah Status</button>
+				<button class="btn btn-primary" value="add" id="editsubmit">Edit Status</button>
+				<button class="btn btn-primary" value="add" id="editcancel3">Cancel</button>
+
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light" id="tabledata">
+					<thead>
+						<tr>
+							<th> Edit / Delete</th>
+
+							<th>Ship Trip ID</th>
+
+							<th>Ship Trip Name</th>
+
+							<th>Ship From</th>
+
+							<th>Destination City</th>
+
+							<th>Note</th>
+
+						</tr>
+					</thead>
+
+					<tbody id="viewtable">
+						<tr></tr>
+					</tbody>
+				</table>
+			</div>
+
+
+
+
+		</form>
+	</div>
+</section>
+
+
+
+<script>
+	$(document).ready(function () {
+		$('#editsubmit').hide();
+		$('#editcancel3').hide();
+		$.post("process/shiptrip.php", {
+			action: 'view',
+			id: "",
+			name: "",
+			from: "",
+			destination: "",
+			note: ""
+		},
+			function (data) {
+				viewdata(data);
+			});
+
+		$('#search_ship_from').autocomplete({
+			minLength: 2,
+			source: function (request, response) {
+				$.ajax({
+					url: "process/shiptrip.php",
+					type: "POST",
+					data: { 'action': 'citydata', 'id': '', 'name': '' + $('#search_ship_from').val() + '', 'from': '', 'destination': '', 'note': '' },
+					dataType: "json",
+					success: function (data) {
+						response($.map(data, function (item) {
+							return {
+								label: item.label,
+								value: item.value
+							}
+						}));
+					}
+				});
+			},
+			autoFocus: true,
+			select: function (event, ui) {
+				$('#search_ship_from').val('');
+				$('#ship_from').val(ui.item.value);
+				return false;
+			}
+
+		});
+		$('#search_destination_city').autocomplete({
+			minLength: 2,
+			source: function (request, response) {
+				$.ajax({
+					url: "process/shiptrip.php",
+					type: "POST",
+					data: { 'action': 'citydata', 'id': '', 'name': '' + $('#search_destination_city').val() + '', 'from': '', 'destination': '', 'note': '' },
+					dataType: "json",
+					success: function (data) {
+						response($.map(data, function (item) {
+							return {
+								label: item.label,
+								value: item.value
+							}
+						}));
+					}
+				});
+			},
+			autoFocus: true,
+			select: function (event, ui) {
+				$('#search_destination_city').val('');
+				$('#destination_city').val(ui.item.value);
+				return false;
+			}
+
+		});
+
+		$('#formsubmit').click(function () {
+			var from = $('#ship_from').val().split("-");
+			var destination = $('#destination_city').val().split("-");
+
+			$.post("process/shiptrip.php", {
+				action: 'add',
+				id: '' + $('#ship_trip_id').val() + '',
+				name: '' + $('#ship_trip_name').val() + '',
+				from: '' + from[0] + '',
+				destination: '' + destination[0] + '',
+				note: '' + $('#note').val() + ''
+			},
+				function (data) {
+					document.getElementById('ship_trip_name').value = '';
+					document.getElementById('ship_from').value = '';
+					document.getElementById('destination_city').value = '';
+					document.getElementById('note').value = '';
+					viewdata(data);
+				});
+		});
+	});
+
+	$('#editsubmit').click(function () {
+		var from = $('#ship_from').val().split("-");
+		var destination = $('#destination_city').val().split("-");
+		$.post("process/shiptrip.php", {
+			action: 'edit',
+			id: $('#ship_trip_id').val(),
+			name: $('#ship_trip_name').val(),
+			from: from[0],
+			destination: destination[0],
+			note: $('#note').val()
+		},
+			function (data) {
+				$.post("process/shiptrip.php", {
+					action: 'view',
+					id: "",
+					name: "",
+					from: "",
+					destination: "",
+					note: ""
+				},
+					function (data) {
+						viewdata(data);
+						document.getElementById('ship_trip_name').value = '';
+						document.getElementById('ship_from').value = '';
+						document.getElementById('destination_city').value = '';
+						document.getElementById('note').value = '';
+						$('#formsubmit').show();
+						$('#editsubmit').hide();
+						$('#editcancel3').hide();
+					});
+			});
+	});
+
+	$('#editcancel3').click(function () {
+
+		$.post("process/shiptrip.php", {
+			action: 'view',
+			id: "",
+			name: "",
+			from: "",
+			destination: "",
+			note: ""
+		},
+			function (data) {
+				viewdata(data);
+				document.getElementById('ship_trip_name').value = '';
+				document.getElementById('ship_from').value = '';
+				document.getElementById('destination_city').value = '';
+				document.getElementById('note').value = '';
+				$('#formsubmit').show();
+				$('#editsubmit').hide();
+				$('#editcancel3').hide();
+			});
+	});
+
+
+
+	function viewdata(data) {
+
+		$('#viewtable').html('');
+		var jsondata = JSON.parse(data);
+		for (var i = 0; i < jsondata.length - 1; i++) {
+			var tr = "<tr id='tabletr" + i + "'>";
+			var td1 = "<td>" + jsondata[i].ship_trip_id + "</td>";
+			var td2 = "<td>" + jsondata[i].ship_trip_name + "</td>";
+			var td3 = "<td>" + jsondata[i].ship_from + "</td>";
+			var td4 = "<td>" + jsondata[i].destination_city + "</td>";
+			var td5 = "<td>" + jsondata[i].note + "</td>";
+			var td6 = "<td><button class='btn btn-sm btn-default' type='submit' onClick='editbutton(" + i + ")'>Edit</button>    ";
+			var td7 = "<button class='btn btn-sm btn-default' type='submit' onClick='deletebutton(" + i + ")'>Delete</button></td>";
+			var tr2 = '</tr>';
+			$('#viewtable').append(tr + td6 + td7 + td1 + td2 + td3 + td4 + td5 + tr2);
+		}
+		var d = new Date();
+		var year = d.getYear() - 100;
+		var month = ("0" + (d.getMonth() + 1)).slice(-2);
+		var num = parseInt(jsondata[jsondata.length - 1].ship_trip_id) + 1;
+		document.getElementById("ship_trip_id").value = "SHT" + year + month + num;
+		//$('#viewtable').append(jsondata[jsondata.length-1].shipment_status);
+		var dataalert = jsondata[jsondata.length - 1].ship_trip_name;
+		if (dataalert !== 'view') {
+			alert(dataalert);
+		}
+
+
+	}
+
+
+	function editbutton(no) {
+		//var Row = document.getElementById("tabletr"+no+"");
+		//var Cells = Row.getElementsByTagName("td");
+
+		var Cell = document.getElementById("viewtable").rows[no];
+
+		document.getElementById('ship_trip_id').value = Cell.cells[1].innerHTML;
+		document.getElementById('ship_trip_name').value = Cell.cells[2].innerHTML;
+		document.getElementById('ship_from').value = Cell.cells[3].innerHTML;
+		document.getElementById('destination_city').value = Cell.cells[4].innerHTML;
+		document.getElementById('note').value = Cell.cells[5].innerHTML;
+
+		$('#formsubmit').hide();
+		$('#editsubmit').show();
+		$('#editcancel3').show();
+	}
+
+	function deletebutton(no) {
+		if (confirm('Apa anda yakin anda ingin menghapus data ini?')) {
+			var Cell = document.getElementById("viewtable").rows[no];
+
+			var id = Cell.cells[1].innerHTML;
+			$.post("process/shiptrip.php", {
+				action: 'delete',
+				id: id,
+				name: "",
+				from: "",
+				destination: "",
+				note: ""
+			},
+				function (data) {
+					viewdata(data);
+				});
+		} else {
+			// Do nothing!
+		}
+	}
+
+</script>

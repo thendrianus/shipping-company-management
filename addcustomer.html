@@ -1,0 +1,212 @@
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">
+        Tambahkan Pelanggan Baru
+    </header>
+    <div class="panel-body">
+
+
+        <form class="form-horizontal" accept-cherset="UTF-8" method="post" action="javascript:formsubmit();"
+            name="form_addcustomer" id="form_addcustomer">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Customer ID </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="cusid" disabled="disabled" required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Customer Name</label>
+                <div class="col-sm-2">
+                    <select name="account" class="form-control m-b" id="status">
+                        <option>Mr</option>
+                        <option>Mrs</option>
+                        <option>Org</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="firstname" required="required">
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="lastname" required="required">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ID Card Number</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="cardnumber"
+                        onkeyup="this.value = idnumber(this.value, 1, 1000000000000000000000)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Address</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="address">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Contact Person</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="contact" required="required"
+                        onkeyup="this.value = idnumber(this.value, 1, 1000000000000000000000)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Email Address</label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" id="email">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Country</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="country">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">City</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="city" required="required">
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-primary" value="add" id="editcity" formnovalidate="formnovalidate">Edit
+                        City</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Note</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control" rows="3" placeholder="" id="note"> </textarea>
+                </div>
+            </div>
+
+
+
+            <div class="line line-dashed line-lg pull-in"></div>
+
+            <div class="form-group text-center">
+
+                <button class="btn btn-primary">Add Customer</button>
+
+            </div>
+
+        </form>
+    </div>
+</section>
+
+
+<script>
+
+    getid();
+
+    function getid() {
+        $.post("process/customer.php", {
+            action: 'getid'
+        },
+            function (data) {
+
+                var jsondata = JSON.parse(data);
+                var d = new Date();
+                var year = d.getYear() - 100;
+                var month = ("0" + (d.getMonth() + 1)).slice(-2);
+                var num = parseInt(jsondata[0].numrow) + 1;
+                document.getElementById("cusid").value = "CUS" + year + month + num;
+            });
+    }
+
+    function idnumber(value, min, max) {
+
+        if (parseInt(value) < min || isNaN(value)) {
+            return 0;
+        }
+        else if (parseInt(value) > max) {
+
+            return 0;
+        }
+        else {
+
+            return value;
+
+
+        }
+
+    }
+
+
+    function formsubmit() {
+        var a = "" + document.getElementById('city').readOnly + "";
+
+        if (a != "false") {
+
+            var city = $('#city').val().split("-");
+            $.post("process/customer.php", {
+                action: 'add',
+                id: "" + $('#cusid').val() + "",
+                title: "" + $('#status').val() + "",
+                firstname: "" + $('#firstname').val() + "",
+                lastname: "" + $('#lastname').val() + "",
+                cardid: "" + $('#cardnumber').val() + "",
+                address: "" + $('#address').val() + "",
+                contact: "" + $('#contact').val() + "",
+                email: "" + $('#email').val() + "",
+                country: "" + $('#country').val() + "",
+                city: "" + city[0] + "",
+                note: "" + $('#note').val() + "",
+            },
+
+                function (data) {
+
+                    alert(data);
+                    getid();
+                });
+
+        }
+        else { "Please Check Your Data" }
+
+
+
+    }
+
+
+    $('#city').autocomplete({
+        minLength: 2,
+        source: function (request, response) {
+            $.ajax({
+                url: "process/shiptrip.php",
+                type: "POST",
+                data: { 'action': 'citydata', 'id': '', 'name': '' + $('#city').val() + '', 'from': '', 'destination': '', 'note': '' },
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        }
+                    }));
+                }
+            });
+        },
+        autoFocus: true,
+        select: function (event, ui) {
+            $('#city').val('');
+            $('#city').val(ui.item.value);
+            document.getElementById('city').readOnly = true;
+            return false;
+        }
+
+    });
+
+    $('#editcity').click(function () {
+        document.form_addcustomer.action = "javascript:void(0);";
+        $('#city').val('');
+        document.getElementById('city').readOnly = false;
+    });
+
+
+</script>
